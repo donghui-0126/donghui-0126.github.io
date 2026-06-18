@@ -151,6 +151,23 @@ section{padding:66px 0}
 .achip:hover{border-color:var(--green);color:var(--green);transform:translateY(-1px)}
 .achip span{color:var(--dim)}
 .achip:hover span{color:var(--green)}
+.journey{position:relative;padding-left:30px;margin-top:6px}
+.journey::before{content:"";position:absolute;left:7px;top:10px;bottom:10px;width:2px;background:linear-gradient(180deg,var(--dim),var(--green),var(--cyan))}
+.jnode{position:relative;margin-bottom:16px}
+.jnode:last-child{margin-bottom:0}
+.jnode::before{content:"";position:absolute;left:-30px;top:6px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid var(--border-2);z-index:1}
+.jnode.cur::before{border-color:var(--green);background:var(--green);box-shadow:0 0 12px var(--green)}
+.jcard{border:1px solid var(--border);border-radius:10px;background:var(--panel-2);padding:15px 17px;transition:.2s}
+.jcard:hover{border-color:var(--border-2);transform:translateX(2px)}
+.jyear{font-family:var(--mono);font-size:12px;color:var(--cyan);margin-bottom:3px}
+.jhead{font-size:16px;font-weight:700;margin-bottom:9px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.jhead .cur-b{font-family:var(--mono);font-size:10px;color:#04140a;background:var(--green);padding:2px 8px;border-radius:20px}
+.jp{font-size:13px;margin:5px 0;color:var(--muted);line-height:1.55}
+.jp .lab{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:5px;margin-right:8px;vertical-align:1px}
+.jp.prob .lab{color:var(--red);border:1px solid rgba(248,81,73,.35)}
+.jp.sol .lab{color:var(--green);border:1px solid rgba(63,185,80,.35)}
+.jp b{color:var(--text);font-weight:600}
+.jtags{margin-top:11px;font-family:var(--mono);font-size:11px;color:var(--dim)}
 .breakdown{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:16px 0 6px}
 @media(max-width:720px){.breakdown{grid-template-columns:1fr}}
 .bd{border:1px solid var(--border);border-radius:9px;padding:13px 15px;background:var(--panel-2)}
@@ -212,6 +229,7 @@ footer .green{color:var(--green)}
     <div class="brand"><span class="p">amuredo</span><span style="color:var(--dim)">@</span><span class="b">quant</span><span style="color:var(--dim)">:~$</span></div>
     <div class="navlinks">
       <a href="#about">about</a>
+      <a href="#journey">journey</a>
       <a href="#work">work</a>
       <a href="#analysis">analysis</a>
       <a href="#awards">awards</a>
@@ -272,9 +290,91 @@ footer .green{color:var(--green)}
   </div>
 </section>
 
+<section id="journey">
+  <div class="wrap">
+    <div class="sec-h reveal"><span class="idx">02.</span><h2>The Journey</h2><span class="line"></span></div>
+    <p class="reveal" style="color:var(--muted);max-width:790px;margin-bottom:26px">
+      알고리즘 입문에서 시작해, <b style="color:var(--text)">매 단계마다 한계에 부딪히고 그걸 풀려고 다음 도구로 옮겨간</b> 궤적입니다.
+      예측 → 의사결정 → 실행, Python → Julia → Rust.
+    </p>
+    <div class="journey">
+
+      <div class="jnode reveal">
+        <div class="jyear">2022</div>
+        <div class="jcard">
+          <div class="jhead">코딩의 시작</div>
+          <p class="jp sol"><span class="lab">시작</span> 트레이딩 아이디어는 있는데 구현할 도구가 없었다 — 알고리즘·자료구조·Python 기초부터 손에 익힘.</p>
+          <div class="jtags">baekjoon-algorithm · Data-structure · practice_openCV</div>
+        </div>
+      </div>
+
+      <div class="jnode reveal">
+        <div class="jyear">2022 – 2023</div>
+        <div class="jcard">
+          <div class="jhead">AI · 데이터 분석</div>
+          <p class="jp prob"><span class="lab">문제</span> 시장 데이터에서 어떻게 <b>의미 있는 신호</b>를 뽑아낼까?</p>
+          <p class="jp sol"><span class="lab">해결</span> ML·통계로 팩터/시그널 분석, 감성분석·EDA — 금융 데이터에 머신러닝을 적용하기 시작.</p>
+          <div class="jtags">machine-learning · ML for Factor Investing · mini-project</div>
+        </div>
+      </div>
+
+      <div class="jnode reveal">
+        <div class="jyear">2023 – 2024</div>
+        <div class="jcard">
+          <div class="jhead">강화학습</div>
+          <p class="jp prob"><span class="lab">문제</span> 지도학습은 <b>단발 예측</b>일 뿐 — 사고·팔고·보유의 순차적 의사결정을 담지 못한다.</p>
+          <p class="jp sol"><span class="lab">해결</span> 트레이딩을 <b>순차 의사결정 문제</b>로 재정의하고 RL로 전환. 커스텀 차트 환경·스캘핑 에이전트, 연구실에서 조합최적화 RL(TSP·VRP).</p>
+          <div class="jtags">Reinforce-Learning · crypto-scalping-RL · Gym-Trading-Env · KHU AIMS LAB</div>
+        </div>
+      </div>
+
+      <div class="jnode reveal">
+        <div class="jyear">2024</div>
+        <div class="jcard">
+          <div class="jhead">마켓 마이크로구조 · HFT</div>
+          <p class="jp prob"><span class="lab">문제</span> RL 백테스트가 실제 <b>체결·호가창 동역학</b>을 무시 → 시뮬과 실거래의 괴리.</p>
+          <p class="jp sol"><span class="lab">해결</span> 오더북을 직접 모델링 — LOB 딥러닝, online estimation, 고빈도 리서치로 시장의 미시 구조를 파고듦. Jane Street(Kaggle Bronze 🥉).</p>
+          <div class="jtags">lob-deep-learning · deepOBs · online_estimation · ML-HFT</div>
+        </div>
+      </div>
+
+      <div class="jnode reveal">
+        <div class="jyear">2025 – 2026</div>
+        <div class="jcard">
+          <div class="jhead">Julia 알파 리서치</div>
+          <p class="jp prob"><span class="lab">문제</span> Python은 연구는 빠르지만 <b>대규모 백테스트·실시간 연산이 느리다.</b></p>
+          <p class="jp sol"><span class="lab">해결</span> Julia로 알파 리서치·백테스트 파이프라인 구축. <code style="font-family:var(--mono);color:var(--cyan)">@view</code>·<code style="font-family:var(--mono);color:var(--cyan)">@inbounds</code>·pre-alloc로 GC 최소화, 패키지 한계는 <code style="font-family:var(--mono);color:var(--cyan)">ccall</code> DLL로 우회, 멀티스레딩 병렬화.</p>
+          <div class="jtags">amuredo-EDA · amuredo-alphago · amuredo-StrategyStore</div>
+        </div>
+      </div>
+
+      <div class="jnode reveal">
+        <div class="jyear">2026</div>
+        <div class="jcard">
+          <div class="jhead">Julia + Rust 하이브리드 OMS</div>
+          <p class="jp prob"><span class="lab">문제</span> 리서치를 실거래로 옮기려니 <b>저지연 주문 실행 인프라</b>가 필요 — Julia만으론 핫패스 성능이 부족.</p>
+          <p class="jp sol"><span class="lab">해결</span> 성능 핫패스를 Rust DLL로 빼낸 <b>Julia + Rust 하이브리드 OMS</b> 구축, 실거래 파이프라인 가동.</p>
+          <div class="jtags">Julia + Rust DLL (ccall FFI)</div>
+        </div>
+      </div>
+
+      <div class="jnode cur reveal">
+        <div class="jyear">2026 · 현재</div>
+        <div class="jcard">
+          <div class="jhead">순수 Rust OMS <span class="cur-b">NOW</span></div>
+          <p class="jp prob"><span class="lab">문제</span> FFI 경계 오버헤드 + Julia <b>GC 압박</b>이 레이턴시·안정성의 병목.</p>
+          <p class="jp sol"><span class="lab">해결</span> OMS 전면을 <b>순수 Rust로 마이그레이션</b>. zero-alloc 상태머신, 11개 거래소 통합 → <b>tick-to-trade p50 4.23µs · 218K tps</b>.</p>
+          <div class="jtags">amuredo-OMS-v2 (Rust) · 102 commits / 2026</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <section id="work">
   <div class="wrap">
-    <div class="sec-h reveal"><span class="idx">02.</span><h2>Featured Projects</h2><span class="line"></span></div>
+    <div class="sec-h reveal"><span class="idx">03.</span><h2>Featured Projects</h2><span class="line"></span></div>
     <div class="projects">
 
       <article class="card reveal">
@@ -431,7 +531,7 @@ footer .green{color:var(--green)}
 
 <section id="analysis">
   <div class="wrap">
-    <div class="sec-h reveal"><span class="idx">03.</span><h2>Data Analysis &amp; Quant Research</h2><span class="line"></span></div>
+    <div class="sec-h reveal"><span class="idx">04.</span><h2>Data Analysis &amp; Quant Research</h2><span class="line"></span></div>
     <p class="reveal" style="color:var(--muted);max-width:790px;margin-bottom:24px">
       시스템 구축에서 끝내지 않고, 실제 데이터로 시그널을 검증하고 전략을 <b style="color:var(--text)">forward test</b>까지 돌립니다.
       마켓 마이크로구조 분석부터 ML 기반 fair-value 모델, 실거래 검증까지.
@@ -466,7 +566,7 @@ footer .green{color:var(--green)}
 
 <section id="archive">
   <div class="wrap">
-    <div class="sec-h reveal"><span class="idx">04.</span><h2>Archive</h2><span class="line"></span></div>
+    <div class="sec-h reveal"><span class="idx">05.</span><h2>Archive</h2><span class="line"></span></div>
     <p class="reveal" style="color:var(--muted);max-width:760px;margin-bottom:18px">
       예전에 적극적으로 파고든 AI/ML · HFT 리서치 프로젝트들 — 지금의 작업으로 이어진 토대.
     </p>
@@ -485,7 +585,7 @@ footer .green{color:var(--green)}
 
 <section id="awards">
   <div class="wrap">
-    <div class="sec-h reveal"><span class="idx">05.</span><h2>Awards &amp; Experience</h2><span class="line"></span></div>
+    <div class="sec-h reveal"><span class="idx">06.</span><h2>Awards &amp; Experience</h2><span class="line"></span></div>
     <div class="two">
       <div class="reveal">
         <div class="tline">
