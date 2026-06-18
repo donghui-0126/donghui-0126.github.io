@@ -144,8 +144,13 @@ section{padding:66px 0}
 .metrics{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .metric{font-family:var(--mono);font-size:11.5px;color:var(--cyan);background:rgba(86,212,221,.06);border:1px solid rgba(86,212,221,.18);border-radius:6px;padding:3px 9px}
 .metric.g{color:var(--green);background:rgba(63,185,80,.06);border-color:rgba(63,185,80,.18)}
-.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
 @media(max-width:820px){.agrid{grid-template-columns:1fr}}
+.arch{display:flex;flex-wrap:wrap;gap:10px}
+.achip{font-family:var(--mono);font-size:12.5px;color:var(--text);border:1px solid var(--border);border-radius:7px;padding:8px 12px;transition:.2s;background:var(--panel-2)}
+.achip:hover{border-color:var(--green);color:var(--green);transform:translateY(-1px)}
+.achip span{color:var(--dim)}
+.achip:hover span{color:var(--green)}
 .breakdown{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:16px 0 6px}
 @media(max-width:720px){.breakdown{grid-template-columns:1fr}}
 .bd{border:1px solid var(--border);border-radius:9px;padding:13px 15px;background:var(--panel-2)}
@@ -209,7 +214,6 @@ footer .green{color:var(--green)}
       <a href="#about">about</a>
       <a href="#work">work</a>
       <a href="#analysis">analysis</a>
-      <a href="#research">research</a>
       <a href="#awards">awards</a>
       <a href="#contact">contact</a>
     </div>
@@ -437,8 +441,6 @@ footer .green{color:var(--green)}
         <h5><span class="n">A</span>Market Microstructure</h5>
         <ul>
           <li>오더북 <b>큐 마이크로구조</b> 리서치 + 분석 툴링 (빗썸)</li>
-          <li><b>Liquidation diagnostics</b> — Binance markPrice / forceOrder 파싱·분석</li>
-          <li><code>OU score</code> 기반 라이브 스크리너, 5분 cross-sectional mean-reversion</li>
         </ul>
       </div>
       <div class="bd reveal">
@@ -447,7 +449,6 @@ footer .green{color:var(--green)}
           <li>BTC·SOL <b>fair-value 모델링</b> — 피처 엔지니어링 + walk-forward 검증</li>
           <li>팩터 분석 <code>IC · IR · hit ratio</code>, 뉴스 sentiment scoring</li>
           <li>sim↔forward <b>parity 감사</b>, fee sweep, EV table, calibration</li>
-          <li>6-mode RAG <b>ablation</b> 정량 비교 · Kaggle Jane Street(Bronze) · BTC 변동성 예측(우수상)</li>
         </ul>
       </div>
       <div class="bd reveal">
@@ -463,18 +464,21 @@ footer .green{color:var(--green)}
   </div>
 </section>
 
-<section id="research">
+<section id="archive">
   <div class="wrap">
-    <div class="sec-h reveal"><span class="idx">04.</span><h2>Research &amp; Alpha Tooling</h2><span class="line"></span></div>
-    <div class="grid2">
-      <div class="mini reveal"><h4><a class="t" href="https://github.com/donghui-0126/ML-HFT" target="_blank" rel="noopener">ML-HFT</a><span class="lang">Python</span></h4><p>선물 대상 머신러닝 기반 고빈도 트레이딩 프레임워크</p></div>
-      <div class="mini reveal"><h4><a class="t" href="https://github.com/donghui-0126/deepOBs" target="_blank" rel="noopener">deepOBs</a><span class="lang">DL</span></h4><p>딥러닝 기반 오더북 단기 예측 가능성 연구</p></div>
-      <div class="mini reveal"><h4><a class="t" href="https://github.com/donghui-0126/lob-world-models" target="_blank" rel="noopener">lob-world-models</a><span class="lang">RL</span></h4><p>LOB 예측을 위한 model-based 강화학습</p></div>
-      <div class="mini reveal"><h4><a class="t" href="https://github.com/donghui-0126/lob-deep-learning" target="_blank" rel="noopener">lob-deep-learning</a><span class="lang">DL</span></h4><p>리밋 오더북 딥러닝 모델</p></div>
-      <div class="mini reveal"><h4><a class="t" href="https://github.com/donghui-0126/online_estimation" target="_blank" rel="noopener">online_estimation</a><span class="lang">Python</span></h4><p>온라인 롤링 추정(mean·weighted·std·skew)</p></div>
-      <div class="mini reveal"><h4><a class="t" href="https://github.com/donghui-0126/JaneStreetKaggle" target="_blank" rel="noopener">JaneStreetKaggle</a><span class="lang">ML</span></h4><p>Jane Street 실시간 마켓 데이터 예측 (Bronze 🥉)</p></div>
-      <div class="mini reveal"><h4><a class="t" href="https://github.com/donghui-0126/Machine-Learning-for-Factor-Investing" target="_blank" rel="noopener">ML for Factor Investing</a><span class="lang">ML</span></h4><p>팩터 투자를 위한 머신러닝 기법</p></div>
-      <div class="mini reveal"><h4><a class="t" href="https://github.com/donghui-0126/crypto-scalping-RL-Agent" target="_blank" rel="noopener">crypto-scalping-RL</a><span class="lang">RL</span></h4><p>커스텀 차트 환경 기반 크립토 스캘핑 RL 에이전트</p></div>
+    <div class="sec-h reveal"><span class="idx">04.</span><h2>Archive</h2><span class="line"></span></div>
+    <p class="reveal" style="color:var(--muted);max-width:760px;margin-bottom:18px">
+      예전에 적극적으로 파고든 AI/ML · HFT 리서치 프로젝트들 — 지금의 작업으로 이어진 토대.
+    </p>
+    <div class="arch reveal">
+      <a class="achip" href="https://github.com/donghui-0126/ML-HFT" target="_blank" rel="noopener">ML-HFT <span>· ML HFT framework</span></a>
+      <a class="achip" href="https://github.com/donghui-0126/deepOBs" target="_blank" rel="noopener">deepOBs <span>· DL orderbook 예측</span></a>
+      <a class="achip" href="https://github.com/donghui-0126/lob-world-models" target="_blank" rel="noopener">lob-world-models <span>· model-based RL</span></a>
+      <a class="achip" href="https://github.com/donghui-0126/lob-deep-learning" target="_blank" rel="noopener">lob-deep-learning <span>· LOB DL</span></a>
+      <a class="achip" href="https://github.com/donghui-0126/online_estimation" target="_blank" rel="noopener">online_estimation <span>· 온라인 롤링 추정</span></a>
+      <a class="achip" href="https://github.com/donghui-0126/JaneStreetKaggle" target="_blank" rel="noopener">JaneStreetKaggle <span>· Kaggle Bronze 🥉</span></a>
+      <a class="achip" href="https://github.com/donghui-0126/Machine-Learning-for-Factor-Investing" target="_blank" rel="noopener">ML for Factor Investing</a>
+      <a class="achip" href="https://github.com/donghui-0126/crypto-scalping-RL-Agent" target="_blank" rel="noopener">crypto-scalping-RL <span>· RL 스캘핑</span></a>
     </div>
   </div>
 </section>
