@@ -1,0 +1,5 @@
+.omc/
+profile-README.md
+*.log
+.DS_Store
+Thumbs.db
