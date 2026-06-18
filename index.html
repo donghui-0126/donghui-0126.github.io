@@ -166,7 +166,12 @@ section{padding:66px 0}
 .jp .lab{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:5px;margin-right:8px;vertical-align:1px}
 .jp.prob .lab{color:var(--red);border:1px solid rgba(248,81,73,.35)}
 .jp.sol .lab{color:var(--green);border:1px solid rgba(63,185,80,.35)}
+.jp.now .lab{color:var(--cyan);border:1px solid rgba(86,212,221,.35)}
 .jp b{color:var(--text);font-weight:600}
+.jopt{font-size:12.5px;color:var(--muted);padding:2px 0 2px 16px;position:relative;line-height:1.5}
+.jopt::before{content:"▹";position:absolute;left:0;color:var(--green);font-size:11px}
+.jopt code{font-family:var(--mono);font-size:11px;color:var(--cyan)}
+.jopt b{color:var(--text);font-weight:600}
 .jtags{margin-top:11px;font-family:var(--mono);font-size:11px;color:var(--dim)}
 .breakdown{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:16px 0 6px}
 @media(max-width:720px){.breakdown{grid-template-columns:1fr}}
@@ -294,36 +299,27 @@ footer .green{color:var(--green)}
   <div class="wrap">
     <div class="sec-h reveal"><span class="idx">02.</span><h2>The Journey</h2><span class="line"></span></div>
     <p class="reveal" style="color:var(--muted);max-width:790px;margin-bottom:26px">
-      알고리즘 입문에서 시작해, <b style="color:var(--text)">매 단계마다 한계에 부딪히고 그걸 풀려고 다음 도구로 옮겨간</b> 궤적입니다.
+      데이터 분석으로 출발해 <b style="color:var(--text)">강화학습에서 트레이딩에 빠진</b> 뒤, 매 단계마다 한계에 부딪히고 그걸 풀려고 다음 도구로 옮겨간 궤적입니다.
       예측 → 의사결정 → 실행, Python → Julia → Rust.
     </p>
     <div class="journey">
 
       <div class="jnode reveal">
-        <div class="jyear">2022</div>
-        <div class="jcard">
-          <div class="jhead">코딩의 시작</div>
-          <p class="jp sol"><span class="lab">시작</span> 트레이딩 아이디어는 있는데 구현할 도구가 없었다 — 알고리즘·자료구조·Python 기초부터 손에 익힘.</p>
-          <div class="jtags">baekjoon-algorithm · Data-structure · practice_openCV</div>
-        </div>
-      </div>
-
-      <div class="jnode reveal">
         <div class="jyear">2022 – 2023</div>
         <div class="jcard">
           <div class="jhead">AI · 데이터 분석</div>
-          <p class="jp prob"><span class="lab">문제</span> 시장 데이터에서 어떻게 <b>의미 있는 신호</b>를 뽑아낼까?</p>
-          <p class="jp sol"><span class="lab">해결</span> ML·통계로 팩터/시그널 분석, 감성분석·EDA — 금융 데이터에 머신러닝을 적용하기 시작.</p>
-          <div class="jtags">machine-learning · ML for Factor Investing · mini-project</div>
+          <p class="jp prob"><span class="lab">문제</span> 데이터에서 어떻게 <b>의미 있는 패턴</b>을 뽑아낼까?</p>
+          <p class="jp sol"><span class="lab">해결</span> 머신러닝·통계·EDA로 데이터 분석에 입문 — 여러 도메인 데이터를 다루며 기초 체력을 쌓음.</p>
+          <div class="jtags">machine-learning · mini-project · ML/DL 기초</div>
         </div>
       </div>
 
       <div class="jnode reveal">
         <div class="jyear">2023 – 2024</div>
         <div class="jcard">
-          <div class="jhead">강화학습</div>
-          <p class="jp prob"><span class="lab">문제</span> 지도학습은 <b>단발 예측</b>일 뿐 — 사고·팔고·보유의 순차적 의사결정을 담지 못한다.</p>
-          <p class="jp sol"><span class="lab">해결</span> 트레이딩을 <b>순차 의사결정 문제</b>로 재정의하고 RL로 전환. 커스텀 차트 환경·스캘핑 에이전트, 연구실에서 조합최적화 RL(TSP·VRP).</p>
+          <div class="jhead">강화학습 — 트레이딩에 빠지다</div>
+          <p class="jp prob"><span class="lab">문제</span> 분석에만 머물면 의미가 없다 — 결국 <b>시장에서 사고팔며 행동</b>해야 한다. 단발 예측으론 부족.</p>
+          <p class="jp sol"><span class="lab">해결</span> 여기서부터 트레이딩에 본격적으로 빠짐. 매매를 <b>순차 의사결정 문제</b>로 보고 RL로 접근 — 커스텀 차트 환경·스캘핑 에이전트, 연구실에서 조합최적화 RL(TSP·VRP).</p>
           <div class="jtags">Reinforce-Learning · crypto-scalping-RL · Gym-Trading-Env · KHU AIMS LAB</div>
         </div>
       </div>
@@ -351,10 +347,17 @@ footer .green{color:var(--green)}
       <div class="jnode reveal">
         <div class="jyear">2026</div>
         <div class="jcard">
-          <div class="jhead">Julia + Rust 하이브리드 OMS</div>
-          <p class="jp prob"><span class="lab">문제</span> 리서치를 실거래로 옮기려니 <b>저지연 주문 실행 인프라</b>가 필요 — Julia만으론 핫패스 성능이 부족.</p>
-          <p class="jp sol"><span class="lab">해결</span> 성능 핫패스를 Rust DLL로 빼낸 <b>Julia + Rust 하이브리드 OMS</b> 구축, 실거래 파이프라인 가동.</p>
-          <div class="jtags">Julia + Rust DLL (ccall FFI)</div>
+          <div class="jhead">Julia OMS — 온몸 비틀기 최적화</div>
+          <p class="jp prob"><span class="lab">문제</span> 리서치를 실거래로. GC가 있는 Julia로 <b>마이크로초 핫패스</b>를 버틸 수 있나?</p>
+          <p class="jp sol"><span class="lab">해결</span> Julia로 OMS를 직접 구현하고 성능을 <b>극한까지 짜냄</b>:</p>
+          <ul style="list-style:none;padding:0;margin:7px 0 0">
+            <li class="jopt"><code>@view</code> zero-copy 슬라이싱 · <code>@inbounds</code> 경계검사 제거</li>
+            <li class="jopt">pre-allocation + in-place(<code>!</code>) 버퍼 재사용으로 <b>heap allocation 극한 감소</b></li>
+            <li class="jopt">type stability 확보(<code>@code_warntype</code>), 핫루프 박싱·동적 디스패치 제거</li>
+            <li class="jopt"><code>Threads.@threads</code>·<code>@spawn</code> 병렬 연산 파이프라인</li>
+            <li class="jopt">Julia 패키지·성능 한계는 <code>ccall</code> <b>Rust DLL</b>로 우회 (하이브리드)</li>
+          </ul>
+          <div class="jtags">Julia OMS · ccall FFI · Rust DLL hotpath</div>
         </div>
       </div>
 
@@ -362,8 +365,9 @@ footer .green{color:var(--green)}
         <div class="jyear">2026 · 현재</div>
         <div class="jcard">
           <div class="jhead">순수 Rust OMS <span class="cur-b">NOW</span></div>
-          <p class="jp prob"><span class="lab">문제</span> FFI 경계 오버헤드 + Julia <b>GC 압박</b>이 레이턴시·안정성의 병목.</p>
+          <p class="jp prob"><span class="lab">문제</span> 온몸을 비틀어도 FFI 경계 오버헤드 + Julia <b>GC 압박</b>이 레이턴시·안정성의 병목.</p>
           <p class="jp sol"><span class="lab">해결</span> OMS 전면을 <b>순수 Rust로 마이그레이션</b>. zero-alloc 상태머신, 11개 거래소 통합 → <b>tick-to-trade p50 4.23µs · 218K tps</b>.</p>
+          <p class="jp now"><span class="lab">진행중</span> <b>2026년 1월</b>부터 Claude Code(AI 에이전트)로 개발 가속 — 현재도 활발히 진행 중.</p>
           <div class="jtags">amuredo-OMS-v2 (Rust) · 102 commits / 2026</div>
         </div>
       </div>
