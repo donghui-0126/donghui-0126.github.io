@@ -144,6 +144,16 @@ section{padding:66px 0}
 .metrics{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .metric{font-family:var(--mono);font-size:11.5px;color:var(--cyan);background:rgba(86,212,221,.06);border:1px solid rgba(86,212,221,.18);border-radius:6px;padding:3px 9px}
 .metric.g{color:var(--green);background:rgba(63,185,80,.06);border-color:rgba(63,185,80,.18)}
+.breakdown{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:16px 0 6px}
+@media(max-width:720px){.breakdown{grid-template-columns:1fr}}
+.bd{border:1px solid var(--border);border-radius:9px;padding:13px 15px;background:var(--panel-2)}
+.bd h5{font-family:var(--mono);font-size:12px;color:var(--green);margin-bottom:8px;letter-spacing:.3px}
+.bd h5 .n{color:var(--dim);margin-right:6px}
+.bd ul{list-style:none;margin:0;padding:0}
+.bd li{font-size:12.5px;color:var(--muted);padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.bd li::before{content:"–";position:absolute;left:0;color:var(--dim)}
+.bd li b{color:var(--text);font-weight:600}
+.bd li code{font-family:var(--mono);font-size:11.5px;color:var(--cyan);background:rgba(86,212,221,.07);padding:1px 5px;border-radius:4px}
 .stack{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .tag{font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:5px;padding:2px 8px}
 .links{display:flex;gap:16px;margin-top:14px;font-family:var(--mono);font-size:12.5px}
@@ -267,8 +277,8 @@ footer .green{color:var(--green)}
         </div>
         <p class="desc">
           순수 <b>Rust</b>로 마이그레이션한 멀티 거래소 주문관리시스템(OMS). Julia+Rust DLL 하이브리드를
-          FFI 경계 없이 재작성해 GC 압박을 제거했습니다. <b>Feeder → Matching Engine → Feature Store →
-          Pricing Layer → OMS</b> 파이프라인, ML 기반 마켓메이킹(SOL/BTC fair-value), 거래소별 인증(JWT·HMAC) 구현.
+          FFI 경계 없이 재작성해 GC 압박을 제거하고, 실시간 데이터 수집부터 주문 실행까지 한 시스템으로
+          수직 통합했습니다. <b>2026년 102개 커밋</b>에 걸쳐 다음을 직접 설계·구현했습니다.
         </p>
         <div class="metrics">
           <span class="metric g">tick-to-trade p50 4.23µs</span>
@@ -278,8 +288,64 @@ footer .green{color:var(--green)}
           <span class="metric">zero-alloc state machine (~50 transitions)</span>
           <span class="metric">BTreeMap depth book · CPU −27%</span>
         </div>
+
+        <div class="breakdown">
+          <div class="bd">
+            <h5><span class="n">01</span>Engine &amp; Pipeline</h5>
+            <ul>
+              <li>Julia+Rust DLL 하이브리드 → <b>순수 Rust 마이그레이션</b> (FFI 경계·GC 압박 제거)</li>
+              <li><b>Feeder → Matching → Feature Store → Pricing → OMS</b> 5-stage 파이프라인 설계</li>
+              <li>zero-alloc 주문 상태머신(~50 전이), <code>DoubleBuffer</code> lock-free read</li>
+              <li><b>SimExchange</b>(Phase 5) — 실거래 전 검증용 시뮬레이션 거래소</li>
+            </ul>
+          </div>
+          <div class="bd">
+            <h5><span class="n">02</span>Multi-exchange Data Infra</h5>
+            <ul>
+              <li>11개 거래소 WS/REST 통합 + 거래소별 인증(<code>HS256/512 JWT</code>, <code>HMAC-SHA256/512</code>)</li>
+              <li>Binance 선물 <b>577종목</b> data-save + watchdog(freeze 감지·PID dedup·WS timeout·stale feed)</li>
+              <li>9개 거래소 데이터 품질 버그 수정, parquet 품질 검증, <code>batch_capacity</code> 튜닝</li>
+              <li>BinanceFeed <code>BTreeMap</code> depth book → <b>CPU −27%</b></li>
+            </ul>
+          </div>
+          <div class="bd">
+            <h5><span class="n">03</span>Latency / Parsing</h5>
+            <ul>
+              <li><b>tick-to-trade p50 4.23µs · 218K tps</b> (117 온라인 피처 연산 포함)</li>
+              <li>메시지 크기 기반 JSON 파싱 라우팅(serde 소형 / <code>simd-json</code> depth) 8개 거래소 롤아웃</li>
+              <li>wire-to-order · multi-feeder · parse-decompose <b>벤치마크</b>로 파싱 경로 최적화</li>
+              <li><code>PARSING_LATENCY_SPEC</code> — 파이프라인 레이턴시 명세 문서화</li>
+            </ul>
+          </div>
+          <div class="bd">
+            <h5><span class="n">04</span>ML Market Making</h5>
+            <ul>
+              <li><b>SOL MM</b>: Julia 모델(v3m_17/19/34), walk-forward 스윕(D×K×τ×fee), <b>sim↔forward parity 감사</b></li>
+              <li><b>97-feature 스키마</b> + PricingSession 모델 로더, FeatureStore→inference end-to-end</li>
+              <li>offline/online 피처 parity (<code>LookbackLog</code>, <code>OfiNet</code>, vol_60s 등)</li>
+              <li><b>BTC fair-value</b>: 모델 export → Rust loader → maker 전략 배포 / online Ridge · DOGE OLS · Ladder MR</li>
+            </ul>
+          </div>
+          <div class="bd">
+            <h5><span class="n">05</span>Execution Safety &amp; Ops</h5>
+            <ul>
+              <li>missed fill 감지, WS 버퍼 만료 → <b>REST 검증 폴백</b>, stale CancelInFlight 정리</li>
+              <li>graceful flatten(체결 대기 후 종료), dashboard Stop/Shutdown 제어 API</li>
+              <li>실시간 forward-test 대시보드, SignalEngine 게이트웨이 통합</li>
+            </ul>
+          </div>
+          <div class="bd">
+            <h5><span class="n">06</span>Quality &amp; Docs</h5>
+            <ul>
+              <li><b>4-pass 코드베이스 감사</b> — 22건 수정, 거래소 9곳 데이터 정합성 확보</li>
+              <li>계층형 <code>AGENTS.md</code> 문서화, MODEL_REGISTRY research→production 5-stage 체크리스트</li>
+              <li>Strategy Playbook — 2-layer 트레이딩 시스템 가이드(15개 전략 예시)</li>
+            </ul>
+          </div>
+        </div>
+
         <div class="stack">
-          <span class="tag">Rust</span><span class="tag">tokio</span><span class="tag">simd-json</span><span class="tag">serde</span><span class="tag">DoubleBuffer / lock-free</span>
+          <span class="tag">Rust</span><span class="tag">tokio</span><span class="tag">simd-json</span><span class="tag">serde</span><span class="tag">Polars/Parquet</span><span class="tag">Julia (models)</span><span class="tag">DoubleBuffer / lock-free</span>
         </div>
       </article>
 
