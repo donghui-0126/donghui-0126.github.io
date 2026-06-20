@@ -576,5 +576,186 @@ footer{border-top:1px solid var(--border);margin-top:30px;padding:22px 0;text-al
   document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 })();
 </script>
+
+<!-- ============ in-page admin editor (password + token → commit) ============ -->
+<style>
+#amrd-fab{position:fixed;right:16px;bottom:16px;z-index:9998;width:38px;height:38px;border-radius:50%;border:1px solid var(--border-2);background:#fff;color:var(--muted);font-size:15px;cursor:pointer;opacity:.32;transition:.2s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px -6px rgba(0,0,0,.3)}
+#amrd-fab:hover{opacity:1;color:var(--accent);border-color:var(--accent)}
+.amrd-modal{position:fixed;inset:0;z-index:9999;background:rgba(15,20,30,.45);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:20px}
+.amrd-box{background:#fff;border:1px solid var(--border-2);border-radius:14px;max-width:380px;width:100%;padding:22px;box-shadow:0 20px 60px -20px rgba(0,0,0,.4);font-family:var(--sans)}
+.amrd-box h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.amrd-box p{font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.55}
+.amrd-box input{width:100%;font-family:var(--mono);font-size:13px;padding:9px 11px;border:1px solid var(--border-2);border-radius:8px;margin-bottom:10px;background:var(--bg-soft)}
+.amrd-box input:focus{outline:none;border-color:var(--accent)}
+.amrd-row{display:flex;gap:8px;flex-wrap:wrap}
+.amrd-btn{font-family:var(--sans);font-size:13px;font-weight:600;padding:9px 14px;border-radius:8px;border:1px solid var(--border-2);background:#fff;color:var(--text);cursor:pointer;transition:.15s}
+.amrd-btn:hover{border-color:var(--accent);color:var(--accent)}
+.amrd-btn.pri{background:var(--accent);color:#fff;border-color:var(--accent)}
+.amrd-btn.pri:hover{background:#3050d8;color:#fff}
+.amrd-msg{font-size:12px;margin-top:8px;min-height:15px}
+.amrd-msg.ok{color:var(--green)} .amrd-msg.err{color:var(--red)}
+#amrd-bar{position:fixed;left:0;right:0;bottom:0;z-index:9998;background:#1f2328;color:#fff;display:flex;gap:8px;align-items:center;padding:9px 16px;flex-wrap:wrap;font-family:var(--sans);font-size:13px;box-shadow:0 -4px 20px -8px rgba(0,0,0,.4)}
+#amrd-bar .lbl{font-weight:700;margin-right:6px}
+#amrd-bar .sp{flex:1}
+#amrd-bar button{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:7px;border:1px solid #3a4250;background:#2b313b;color:#fff;cursor:pointer}
+#amrd-bar button:hover{background:#3a4250}
+#amrd-bar button.pri{background:var(--accent);border-color:var(--accent)}
+body.amrd-editing [contenteditable="true"]{outline:none}
+body.amrd-editing #top,body.amrd-editing section,body.amrd-editing footer{outline:1px dashed rgba(66,99,235,.25)}
+</style>
+<script>
+(function(){
+  const REPO="donghui-0126/donghui-0126.github.io", FILE="index.html", BRANCH="main";
+  const LS_PW="amrd_pw_hash", LS_TOK="amrd_gh_token";
+  let editing=false;
+
+  async function sha256(s){
+    const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
+    return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+  async function checkPw(input){
+    const stored=localStorage.getItem(LS_PW);
+    if(!stored) return input==="0000";            // 초기 비밀번호
+    return (await sha256(input))===stored;
+  }
+  function b64utf8(str){
+    const bytes=new TextEncoder().encode(str); let bin=""; const CH=0x8000;
+    for(let i=0;i<bytes.length;i+=CH){ bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+CH)); }
+    return btoa(bin);
+  }
+  function modal(html){
+    const wrap=document.createElement("div"); wrap.className="amrd-modal";
+    const box=document.createElement("div"); box.className="amrd-box"; box.innerHTML=html;
+    wrap.appendChild(box);
+    wrap.addEventListener("mousedown",e=>{ if(e.target===wrap) wrap.remove(); });
+    document.body.appendChild(wrap); return wrap;
+  }
+  function closeModals(){ document.querySelectorAll(".amrd-modal").forEach(m=>m.remove()); }
+
+  function openLogin(){
+    const m=modal(
+      '<h3>🔒 편집 모드</h3>'+
+      '<p>비밀번호를 입력하세요. (초기값 <b>0000</b>)</p>'+
+      '<input id="amrd-pw" type="password" placeholder="비밀번호" autocomplete="off" />'+
+      '<div class="amrd-row"><button class="amrd-btn pri" id="amrd-pw-ok">잠금 해제</button>'+
+      '<button class="amrd-btn" id="amrd-pw-cancel">취소</button></div>'+
+      '<div class="amrd-msg" id="amrd-pw-msg"></div>');
+    const inp=m.querySelector("#amrd-pw"); inp.focus();
+    const msg=m.querySelector("#amrd-pw-msg");
+    async function go(){
+      if(await checkPw(inp.value)){ closeModals(); enterEdit(); }
+      else{ msg.className="amrd-msg err"; msg.textContent="비밀번호가 틀렸습니다."; inp.select(); }
+    }
+    m.querySelector("#amrd-pw-ok").onclick=go;
+    m.querySelector("#amrd-pw-cancel").onclick=closeModals;
+    inp.onkeydown=e=>{ if(e.key==="Enter") go(); };
+  }
+
+  function openChangePw(){
+    const m=modal(
+      '<h3>🔒 비밀번호 변경</h3>'+
+      '<p>새 비밀번호는 이 브라우저에만 저장됩니다(SHA-256 해시).</p>'+
+      '<input id="amrd-np1" type="password" placeholder="새 비밀번호" autocomplete="new-password"/>'+
+      '<input id="amrd-np2" type="password" placeholder="새 비밀번호 확인" autocomplete="new-password"/>'+
+      '<div class="amrd-row"><button class="amrd-btn pri" id="amrd-np-ok">변경</button>'+
+      '<button class="amrd-btn" id="amrd-np-cancel">취소</button></div>'+
+      '<div class="amrd-msg" id="amrd-np-msg"></div>');
+    const msg=m.querySelector("#amrd-np-msg");
+    m.querySelector("#amrd-np-ok").onclick=async()=>{
+      const a=m.querySelector("#amrd-np1").value, b=m.querySelector("#amrd-np2").value;
+      if(a.length<1){ msg.className="amrd-msg err"; msg.textContent="비밀번호를 입력하세요."; return; }
+      if(a!==b){ msg.className="amrd-msg err"; msg.textContent="두 입력이 일치하지 않습니다."; return; }
+      localStorage.setItem(LS_PW, await sha256(a));
+      msg.className="amrd-msg ok"; msg.textContent="변경되었습니다 ✓";
+      setTimeout(closeModals,800);
+    };
+    m.querySelector("#amrd-np-cancel").onclick=closeModals;
+  }
+
+  function openToken(){
+    const cur=localStorage.getItem(LS_TOK);
+    const m=modal(
+      '<h3>🔑 GitHub 토큰</h3>'+
+      '<p>저장(커밋)을 위해 이 저장소 <b>Contents 쓰기</b> 권한이 있는 GitHub Personal Access Token이 필요합니다. 이 브라우저에만 저장됩니다.</p>'+
+      '<input id="amrd-tok" type="password" placeholder="ghp_... 또는 github_pat_..." value="'+(cur||"")+'" autocomplete="off"/>'+
+      '<div class="amrd-row"><button class="amrd-btn pri" id="amrd-tok-ok">저장</button>'+
+      (cur?'<button class="amrd-btn" id="amrd-tok-del">삭제</button>':'')+
+      '<button class="amrd-btn" id="amrd-tok-cancel">취소</button></div>'+
+      '<div class="amrd-msg" id="amrd-tok-msg"></div>');
+    m.querySelector("#amrd-tok-ok").onclick=()=>{
+      const v=m.querySelector("#amrd-tok").value.trim();
+      if(v) localStorage.setItem(LS_TOK,v); closeModals();
+    };
+    const del=m.querySelector("#amrd-tok-del"); if(del) del.onclick=()=>{ localStorage.removeItem(LS_TOK); closeModals(); };
+    m.querySelector("#amrd-tok-cancel").onclick=closeModals;
+  }
+
+  function enterEdit(){
+    editing=true;
+    document.querySelectorAll(".reveal").forEach(n=>n.classList.add("in")); // 전부 보이게
+    document.body.classList.add("amrd-editing");
+    document.body.setAttribute("contenteditable","true");
+    document.body.setAttribute("spellcheck","false");
+    buildBar();
+  }
+  function exitEdit(){
+    editing=false;
+    document.body.classList.remove("amrd-editing");
+    document.body.removeAttribute("contenteditable");
+    document.body.removeAttribute("spellcheck");
+    const bar=document.getElementById("amrd-bar"); if(bar) bar.remove();
+  }
+  function buildBar(){
+    if(document.getElementById("amrd-bar")) return;
+    const bar=document.createElement("div"); bar.id="amrd-bar"; bar.setAttribute("contenteditable","false");
+    bar.innerHTML='<span class="lbl">✏️ 편집 모드</span>'+
+      '<span class="amrd-msg" id="amrd-bar-msg" style="color:#9aa4b2;margin:0"></span>'+
+      '<span class="sp"></span>'+
+      '<button id="amrd-tok-btn">🔑 토큰</button>'+
+      '<button id="amrd-pwchg-btn">🔒 비밀번호 변경</button>'+
+      '<button class="pri" id="amrd-save-btn">💾 저장(커밋)</button>'+
+      '<button id="amrd-exit-btn">✕ 종료</button>';
+    document.body.appendChild(bar);
+    bar.querySelector("#amrd-tok-btn").onclick=openToken;
+    bar.querySelector("#amrd-pwchg-btn").onclick=openChangePw;
+    bar.querySelector("#amrd-exit-btn").onclick=exitEdit;
+    bar.querySelector("#amrd-save-btn").onclick=save;
+  }
+  function barMsg(t,cls){ const m=document.getElementById("amrd-bar-msg"); if(m){ m.textContent=t; m.style.color=cls==="err"?"#ff8b8b":cls==="ok"?"#7ee2a8":"#9aa4b2"; } }
+
+  function cleanHtml(){
+    const doc=document.documentElement.cloneNode(true);
+    doc.querySelectorAll("#amrd-bar,#amrd-fab,.amrd-modal").forEach(n=>n.remove());
+    const b=doc.querySelector("body");
+    if(b){ b.removeAttribute("contenteditable"); b.removeAttribute("spellcheck"); b.classList.remove("amrd-editing"); }
+    doc.querySelectorAll(".reveal.in").forEach(n=>n.classList.remove("in"));
+    doc.querySelectorAll('[contenteditable]').forEach(n=>n.removeAttribute("contenteditable"));
+    return "<!DOCTYPE html>\n"+doc.outerHTML+"\n";
+  }
+
+  async function save(){
+    const token=localStorage.getItem(LS_TOK);
+    if(!token){ barMsg("토큰을 먼저 설정하세요.","err"); openToken(); return; }
+    barMsg("저장 중…");
+    const headers={ "Authorization":"token "+token, "Accept":"application/vnd.github+json" };
+    try{
+      const g=await fetch("https://api.github.com/repos/"+REPO+"/contents/"+FILE+"?ref="+BRANCH,{headers});
+      if(!g.ok) throw new Error("sha 조회 실패 ("+g.status+") — 토큰 권한 확인");
+      const sha=(await g.json()).sha;
+      const body={ message:"edit via in-page editor", content:b64utf8(cleanHtml()), sha:sha, branch:BRANCH };
+      const p=await fetch("https://api.github.com/repos/"+REPO+"/contents/"+FILE,{method:"PUT",headers,body:JSON.stringify(body)});
+      if(!p.ok){ const e=await p.json().catch(()=>({})); throw new Error(e.message||("HTTP "+p.status)); }
+      const r=await p.json();
+      barMsg("저장됨 ✓ "+r.commit.sha.slice(0,7)+" · 1분 내 반영","ok");
+    }catch(err){ barMsg("실패: "+err.message,"err"); }
+  }
+
+  document.addEventListener("click",e=>{ if(editing){ const a=e.target.closest("a"); if(a) e.preventDefault(); } },true);
+
+  const fab=document.createElement("button"); fab.id="amrd-fab"; fab.title="편집 (관리자)"; fab.textContent="🔒";
+  fab.onclick=openLogin; document.body.appendChild(fab);
+  if(location.hash==="#edit") openLogin();
+})();
+</script>
 </body>
 </html>
