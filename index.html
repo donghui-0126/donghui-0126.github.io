@@ -165,6 +165,30 @@ footer{border-top:1px solid var(--border);margin-top:30px;padding:22px 0;text-al
 
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
 .reveal.in{opacity:1;transform:none}
+
+/* ============ markdown-rendered prose (scoped — does not touch card HTML) ============ */
+#content>h1{font-size:25px;font-weight:800;letter-spacing:-.6px;margin:34px 0 6px}
+#content>h2{font-size:18px;font-weight:700;letter-spacing:-.3px;margin:44px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--border);scroll-margin-top:70px}
+#content>h2:first-child{margin-top:8px}
+#content>h3{font-size:14.5px;font-weight:700;margin:20px 0 8px}
+#content>p{color:var(--muted);font-size:15px;margin:11px 0;line-height:1.7}
+#content>ul,#content>ol{margin:11px 0;padding:0 0 0 2px;list-style:none}
+#content>ul>li,#content>ol>li{position:relative;padding:3px 0 3px 16px;color:var(--muted);font-size:14.5px;line-height:1.6}
+#content>ul>li::before{content:"–";position:absolute;left:0;color:var(--dim)}
+#content>ol{counter-reset:li}
+#content>ol>li::before{content:counter(li)".";counter-increment:li;position:absolute;left:0;color:var(--dim);font-family:var(--mono);font-size:12px}
+#content>table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13.5px}
+#content>table th,#content>table td{text-align:left;padding:8px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+#content>table th{color:var(--text);font-weight:700;font-size:12.5px}
+#content>table td{color:var(--muted)}
+#content>hr{border:none;border-top:1px solid var(--border);margin:30px 0}
+#content>blockquote{border-left:3px solid var(--accent);background:var(--bg-soft);padding:10px 15px;margin:14px 0;border-radius:0 8px 8px 0}
+#content>blockquote p{margin:0;font-size:13.5px;color:var(--muted)}
+#content>p b,#content>ul>li b,#content>ol>li b,#content>table b,#content>p strong,#content>ul>li strong,#content>ol>li strong,#content>table strong,#content>blockquote b,#content>blockquote strong{color:var(--text);font-weight:600}
+#content>p a,#content>ul>li a,#content>ol>li a,#content>table a,#content>blockquote a{color:var(--accent)}
+#content>p a:hover,#content>ul>li a:hover,#content>ol>li a:hover,#content>table a:hover,#content>blockquote a:hover{text-decoration:underline}
+#content>p code,#content>ul>li code,#content>ol>li code,#content>table code,#content>blockquote code{font-family:var(--mono);font-size:12px;color:var(--violet);background:#f2effb;padding:1px 5px;border-radius:4px}
+#content .loading{color:var(--dim);font-family:var(--mono);font-size:13px;padding:40px 0}
 </style>
 </head>
 <body>
@@ -182,579 +206,33 @@ footer{border-top:1px solid var(--border);margin-top:30px;padding:22px 0;text-al
   </div>
 </nav>
 
-<header class="profile" id="top">
-  <div class="wrap">
-    <div class="phead">
-      <img class="avatar" src="https://github.com/donghui-0126.png" alt="Donghui Lim" loading="lazy" />
-      <div>
-        <div class="pname">Donghui Lim <span class="kr">임동휘</span></div>
-        <div class="phandle">@donghui-0126</div>
-      </div>
-    </div>
-    <p class="pbio">
-      <b>Crypto Quant Researcher &amp; HFT Systems Engineer</b> · Seoul 🇰🇷<br>
-      Rust·Julia로 멀티 거래소 실시간 데이터 → 마켓 마이크로구조 모델링 → 주문 실행까지
-      수직 통합한 트레이딩 시스템을 직접 설계합니다. 빗썸 수수료 0bp 기간 <b>누적 거래대금 10억원+</b>.
-    </p>
-    <div class="plinks">
-      <a class="plink solid" href="https://github.com/donghui-0126" target="_blank" rel="noopener">GitHub ↗</a>
-      <a class="plink" href="mailto:lukedonghui@gmail.com">✉ Email</a>
-      <a class="plink" href="https://donghui-0126.github.io/StoryQuant/" target="_blank" rel="noopener">StoryQuant Demo ↗</a>
-    </div>
-  </div>
-</header>
-
-<section id="interests">
-  <div class="wrap">
-    <div class="sec-h reveal"><span class="emo">🔬</span><h2>Interest</h2></div>
-    <div class="tags reveal">
-      <span class="chip">HFT</span>
-      <span class="chip">Market Microstructure</span>
-      <span class="chip">Market Making</span>
-      <span class="chip">Alpha Research</span>
-      <span class="chip">AI</span>
-      <span class="chip">Low-latency Systems · Rust</span>
-      <span class="chip">LLM Research Infra</span>
-    </div>
-  </div>
-</section>
-
-<section id="education">
-  <div class="wrap">
-    <div class="sec-h reveal"><span class="emo">🎓</span><h2>Education</h2></div>
-    <div class="reveal">
-      <div class="aw">
-        <span class="c">경희대학교 산업경영공학과 <span style="color:var(--dim);font-weight:400;font-size:12px">Kyung Hee University · Industrial &amp; Management Systems Engineering</span></span>
-        <span class="r" style="margin-left:auto;color:var(--muted)">학부 재학 중 · 2027 졸업예정</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="journey">
-  <div class="wrap">
-    <div class="sec-h reveal"><span class="emo">🧭</span><h2>The Journey</h2></div>
-    <p class="reveal" style="color:var(--muted);font-size:14px;margin-bottom:20px">
-      데이터 분석으로 출발해 <b style="color:var(--text)">강화학습에서 트레이딩에 빠진</b> 뒤, 매 단계마다 한계에 부딪히고
-      그걸 풀려고 다음 도구로 옮겨간 궤적입니다. 예측 → 의사결정 → 실행, Python → Julia → Rust.
-    </p>
-    <div class="journey">
-
-      <div class="jnode reveal">
-        <div class="jcard">
-          <div class="jyear">2022 – 2023</div>
-          <div class="jhead">AI · 데이터 분석</div>
-          <p class="jp prob"><span class="lab">문제</span> 데이터에서 어떻게 <b>의미 있는 패턴</b>을 뽑아낼까?</p>
-          <p class="jp sol"><span class="lab">해결</span> 머신러닝·통계·EDA로 데이터 분석에 입문 — 여러 도메인 데이터를 다루며 기초 체력을 쌓음.</p>
-          <div class="jtags">machine-learning · mini-project · ML/DL 기초</div>
-        </div>
-      </div>
-
-      <div class="jnode reveal">
-        <div class="jcard">
-          <div class="jyear">2023 – 2024</div>
-          <div class="jhead">강화학습 — 트레이딩에 빠지다</div>
-          <p class="jp prob"><span class="lab">문제</span> 지도학습은 <b>단발 예측</b>일 뿐 — 사고·팔고·보유의 순차적 의사결정을 담지 못한다.</p>
-          <p class="jp sol"><span class="lab">해결</span> 여기서부터 트레이딩에 본격적으로 빠짐. 매매를 <b>순차 의사결정 문제</b>로 보고 RL로 접근 — 커스텀 차트 환경·스캘핑 에이전트, 연구실에서 조합최적화 RL(TSP·VRP).</p>
-          <div class="jtags">Reinforce-Learning · crypto-scalping-RL · Gym-Trading-Env · KHU AIMS LAB</div>
-        </div>
-      </div>
-
-      <div class="jnode reveal">
-        <div class="jcard">
-          <div class="jyear">2024</div>
-          <div class="jhead">마켓 마이크로구조 · HFT</div>
-          <p class="jp prob"><span class="lab">문제</span> RL 백테스트가 실제 <b>체결·호가창 동역학</b>을 무시 → 시뮬과 실거래의 괴리.</p>
-          <p class="jp sol"><span class="lab">해결</span> 오더북을 직접 모델링 — LOB 딥러닝, online estimation, 고빈도 리서치. Jane Street(Kaggle Bronze 🥉).</p>
-          <p class="jp now"><span class="lab">+Rust</span> 이 무렵 <b>Rust에 입문</b> — 『The Rust Programming Language』를 소유권·스마트 포인터까지 완독. 훗날 OMS Rust 재작성의 씨앗.</p>
-          <div class="jtags">lob-deep-learning · deepOBs · online_estimation · ML-HFT · Hello-RUST-World</div>
-        </div>
-      </div>
-
-      <div class="jnode reveal">
-        <div class="jcard">
-          <div class="jyear">2025</div>
-          <div class="jhead">Julia 알파 리서치</div>
-          <p class="jp prob"><span class="lab">문제</span> Python은 연구는 빠르지만 <b>대규모 백테스트·실시간 연산이 느리다.</b></p>
-          <p class="jp sol"><span class="lab">해결</span> Julia로 알파 리서치·백테스트 파이프라인 구축. <code>@view</code>·<code>@inbounds</code>·pre-alloc로 GC 최소화, 멀티스레딩 병렬화.</p>
-          <div class="jtags">amuredo-EDA · amuredo-alphago · amuredo-StrategyStore</div>
-        </div>
-      </div>
-
-      <div class="jnode reveal">
-        <div class="jcard">
-          <div class="jyear">2025</div>
-          <div class="jhead">Julia OMS — 온몸 비틀기 최적화</div>
-          <p class="jp prob"><span class="lab">문제</span> 리서치를 실거래로. GC가 있는 Julia로 <b>마이크로초 핫패스</b>를 버틸 수 있나?</p>
-          <p class="jp sol"><span class="lab">해결</span> Julia로 OMS를 직접 구현하고 성능을 <b>극한까지 짜냄</b>:</p>
-          <ul style="list-style:none">
-            <li class="jopt"><code>@view</code> zero-copy 슬라이싱 · <code>@inbounds</code> 경계검사 제거</li>
-            <li class="jopt">pre-allocation + in-place(<code>!</code>) 버퍼 재사용 → <b>heap allocation 극한 감소</b></li>
-            <li class="jopt">type stability(<code>@code_warntype</code>), 핫루프 박싱·동적 디스패치 제거</li>
-            <li class="jopt"><code>Threads.@threads</code>·<code>@spawn</code> 병렬 연산 파이프라인</li>
-            <li class="jopt">Julia 패키지·성능 한계는 <code>ccall</code> <b>Rust DLL</b>로 우회 (하이브리드)</li>
-          </ul>
-          <div class="jtags">Julia OMS · ccall FFI · Rust DLL hotpath</div>
-        </div>
-      </div>
-
-      <div class="jnode cur reveal">
-        <div class="jcard">
-          <div class="jyear">2026 · 현재</div>
-          <div class="jhead">순수 Rust OMS 🦀</div>
-          <p class="jp prob"><span class="lab">문제</span> 온몸을 비틀어도 FFI 경계 오버헤드 + Julia <b>GC 압박</b>이 레이턴시·안정성의 병목.</p>
-          <p class="jp sol"><span class="lab">해결</span> OMS 전면을 <b>순수 Rust로 마이그레이션</b>. zero-alloc 상태머신, 11개 거래소 통합 → <b>tick-to-trade p50 4.23µs · 218K tps</b>.</p>
-          <p class="jp now"><span class="lab">진행중</span> <b>2026년 1월</b>부터 Claude Code(AI 에이전트)로 개발 가속 — 현재도 활발히 진행 중.</p>
-          <div class="jtags">amuredo-OMS-v2 (Rust) · 102 commits / 2026</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<section id="projects">
-  <div class="wrap">
-    <div class="sec-h reveal"><span class="emo">🗂️</span><h2>Projects</h2><span class="ct">5 featured</span></div>
-    <div class="projects">
-
-      <article class="proj reveal">
-        <div class="proj-meta"><span class="yr">2025 – 2026</span> · Rust <span class="badge feat">★ Featured</span><span class="badge priv">Private</span></div>
-        <div class="proj-title">amuredo-OMS-v2</div>
-        <p class="proj-desc">
-          순수 <b>Rust</b>로 마이그레이션한 멀티 거래소 주문관리시스템(OMS). 실시간 데이터 수집부터 주문 실행까지
-          수직 통합했고, <b>2026년 102개 커밋</b>에 걸쳐 직접 설계·구현했습니다.
-        </p>
-        <div class="metrics">
-          <span class="metric g">tick-to-trade p50 4.23µs</span>
-          <span class="metric g">218K tps</span>
-          <span class="metric">27 crates</span>
-          <span class="metric">11 exchanges</span>
-          <span class="metric">CPU −27%</span>
-        </div>
-        <div class="bd-grid">
-          <div class="bd"><h5><span class="n">01</span>Engine &amp; Pipeline</h5><ul>
-            <li>Julia+Rust DLL → <b>순수 Rust 마이그레이션</b></li>
-            <li>Feeder→Matching→FeatureStore→Pricing→OMS</li>
-            <li>zero-alloc 상태머신, <code>DoubleBuffer</code> lock-free</li></ul></div>
-          <div class="bd"><h5><span class="n">02</span>Multi-exchange Data</h5><ul>
-            <li>11거래소 인증(<code>JWT</code>·<code>HMAC</code>)</li>
-            <li>Binance 선물 <b>577종목</b> + watchdog</li>
-            <li>BTreeMap depth book → CPU −27%</li></ul></div>
-          <div class="bd"><h5><span class="n">03</span>Latency / Parsing</h5><ul>
-            <li>크기 기반 JSON 파싱 라우팅 8거래소</li>
-            <li>wire-to-order·multi-feeder 벤치마크</li>
-            <li><code>PARSING_LATENCY_SPEC</code> 명세화</li></ul></div>
-          <div class="bd"><h5><span class="n">04</span>ML Market Making</h5><ul>
-            <li>SOL MM: walk-forward, <b>parity 감사</b></li>
-            <li>97-feature 스키마 + 모델 로더</li>
-            <li>BTC fair-value → maker 전략 배포</li></ul></div>
-          <div class="bd"><h5><span class="n">05</span>Execution Safety</h5><ul>
-            <li>missed fill 감지, REST 검증 폴백</li>
-            <li>graceful flatten, Stop/Shutdown API</li>
-            <li>실시간 forward-test 대시보드</li></ul></div>
-          <div class="bd"><h5><span class="n">06</span>Quality &amp; Docs</h5><ul>
-            <li><b>4-pass 감사</b> — 22건 수정</li>
-            <li>계층형 <code>AGENTS.md</code>, MODEL_REGISTRY</li>
-            <li>Strategy Playbook (15 전략 예시)</li></ul></div>
-        </div>
-        <div class="stack"><span class="t">Rust</span><span class="t">tokio</span><span class="t">simd-json</span><span class="t">Polars/Parquet</span><span class="t">Julia (models)</span></div>
-      </article>
-
-      <article class="proj reveal">
-        <div class="proj-meta"><span class="yr">2026</span> · Python · LLM <span class="badge live">● Live</span></div>
-        <div class="proj-title">StoryQuant</div>
-        <p class="proj-desc">
-          뉴스 기반 한국 주식 인텔리전스 앱. <b>LLM(gpt-4o-mini)</b>으로 헤드라인을 분류·노이즈 필터링하고,
-          그래프 RAG로 가격 변동의 사후 인과(attribution)를 추적합니다.
-          <b>정직한 검증 — 예측이 아니라 70~90% 노이즈를 걸러내는 것</b>이 목표.
-        </p>
-        <div class="metrics">
-          <span class="metric">RAG</span>
-          <span class="metric">검색 8–10s → ~2s</span>
-          <span class="metric">Supabase · Render 실배포</span>
-        </div>
-        <div class="stack"><span class="t">Python</span><span class="t">JS</span><span class="t">LLM</span><span class="t">Supabase</span></div>
-        <div class="plinks-row">
-          <a href="https://donghui-0126.github.io/StoryQuant/" target="_blank" rel="noopener">live demo ↗</a>
-          <a href="https://github.com/donghui-0126/StoryQuant" target="_blank" rel="noopener">source ↗</a>
-        </div>
-      </article>
-
-      <article class="proj reveal">
-        <div class="proj-meta"><span class="yr">2026</span> · Python · Rust · LLM <span class="badge live">● Live</span></div>
-        <div class="proj-title">heuristiX</div>
-        <p class="proj-desc">
-          공급망 교란 하 동적 FJSSP 스케줄링을 위한 <b>LLM 디스패칭-규칙 진화</b> 연구 플랫폼.
-          논문 5편(AlphaEvolve·EoH·FunSearch·SeEvo·ReasoningBank)을 정리·구현하고,
-          <b>6-mode RAG ablation</b>으로 "failure-only 경험이 낫다"는 가설을 재현. Rust DES 시뮬레이터 + 마법사 대시보드.
-        </p>
-        <div class="metrics">
-          <span class="metric">EoH 4-operator 진화</span>
-          <span class="metric">6-mode RAG ablation</span>
-        </div>
-        <div class="stack"><span class="t">Python</span><span class="t">Rust</span><span class="t">LLM</span><span class="t">Flask</span></div>
-        <div class="plinks-row">
-          <a href="https://heuristix.onrender.com" target="_blank" rel="noopener">live dashboard ↗</a>
-          <a href="https://github.com/donghui-0126/heuristiX-v2" target="_blank" rel="noopener">source ↗</a>
-        </div>
-      </article>
-
-      <article class="proj reveal">
-        <div class="proj-meta"><span class="yr">2026</span> · Rust</div>
-        <div class="proj-title">amure-do / amure-db</div>
-        <p class="proj-desc">
-          <b>Rust</b>로 직접 만든 그래프 RAG 지식 엔진. <b>amure-db</b>는 임베딩+그래프 하이브리드 3-layer 검색
-          (cosine → graph walk → MMR), <b>amure-do</b>는 이를 도메인 불문 가설 기반 연구 엔진으로 일반화(11 LLM providers).
-          레거시 38→15파일 클린 리빌드.
-        </p>
-        <div class="stack"><span class="t">Rust</span><span class="t">embeddings</span><span class="t">graph</span></div>
-        <div class="plinks-row">
-          <a href="https://github.com/donghui-0126/amure-do" target="_blank" rel="noopener">amure-do ↗</a>
-          <a href="https://github.com/donghui-0126/amure-db" target="_blank" rel="noopener">amure-db ↗</a>
-        </div>
-      </article>
-
-      <article class="proj reveal">
-        <div class="proj-meta"><span class="yr">2024 – 2026</span> · Quant Research</div>
-        <div class="proj-title">Quant Research &amp; Forward Tests</div>
-        <p class="proj-desc">
-          시스템 구축에서 끝내지 않고, 실제 데이터로 시그널을 검증하고 전략을 <b>forward test</b>까지 돌립니다.
-        </p>
-        <div class="sub">Market Microstructure</div>
-        <p class="proj-desc" style="margin-top:0">오더북 <b>큐 마이크로구조</b> 리서치 + 분석 툴링 (빗썸).</p>
-        <div class="sub">ML / 통계 분석</div>
-        <p class="proj-desc" style="margin-top:0">BTC·SOL <b>fair-value 모델링</b>(walk-forward) · 팩터 분석 <code>IC · IR · hit ratio</code> · sim↔forward <b>parity 감사</b> · fee sweep · calibration.</p>
-        <div class="sub">Forward Test (실거래 검증)</div>
-        <p class="proj-desc" style="margin-top:0"><b>BTC 낙주매매</b>(급락 후 반등) · <b>WLD</b> pair-reversion · <b>국내 거래소 MM</b>(빗썸) · SOL·DOGE 모델 기반 MM.</p>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<section id="engineering">
-  <div class="wrap">
-    <div class="sec-h reveal"><span class="emo">🛠️</span><h2>Engineering &amp; Troubleshooting</h2><span class="ct">OMS deep-dive</span></div>
-    <p class="ts-intro reveal">
-      <b>amuredo-OMS</b>(Julia+Rust)와 <b>amuredo-OMS-v2</b>(순수 Rust)를 만들며 부딪힌
-      실전 엔지니어링 고민과 해결의 기록 — 데이터 수집부터 실거래 정합성까지 7개 단계.
-      <span style="color:var(--dim)">알파·시그널 내용은 제외, 시스템 설계와 트러블슈팅만.</span>
-    </p>
-    <div class="ts-list">
-
-      <article class="ts reveal">
-        <div class="ts-h"><span class="n">01</span><span class="tt">데이터 수집</span><span class="en">data-save · parquet archival</span></div>
-        <p class="jp prob"><span class="lab">문제</span> 멀티 거래소 원시 틱을 손실 없이 보관하면서, <b>수집 부하 자체가 데이터를 오염시키지 않게</b> 하려면?</p>
-        <p class="jp sol"><span class="lab">해결</span> <b>3,349 심볼 × 12 거래소</b>를 시간단위 Parquet 파티션(<code>&lt;거래소&gt;/&lt;심볼&gt;/&lt;YYYYMMDD_HH&gt;</code>)으로 아카이빙, watchdog 싱글톤으로 단일 인스턴스 강제. 60k msg/sec 고부하에서 OS NIC batching이 <b>RX→consumer lag p99를 1,140ms</b>까지 밀어 1Hz 스냅샷이 stale해지는 "silent contamination"을 측정으로 발견 → 프로세스당 <b>≤50k msg/sec ≈ 800심볼</b> 안전선으로 분할.</p>
-        <div class="metrics">
-          <span class="metric">3,349 심볼 × 12 거래소</span>
-          <span class="metric g">lag p99 1140ms → 95ms</span>
-          <span class="metric">≤50k msg/sec / proc</span>
-        </div>
-      </article>
-
-      <article class="ts reveal">
-        <div class="ts-h"><span class="n">02</span><span class="tt">피더 &amp; 피처 스토어</span><span class="en">feeder · FeatureStore</span></div>
-        <p class="jp prob"><span class="lab">문제</span> 초당 수만 메시지를 받아 <b>수십~수백 피처를 GC·락 없이</b> 실시간 계산하려면?</p>
-        <p class="jp sol"><span class="lab">해결</span> 피더(WS producer) → MatchingEngine → Channel 경쟁 소비. 오브젝트 풀(<code>get_from_pool!</code>/<code>release_to_pool!</code>)·<code>StaticRingBuffer</code>로 <b>heap 할당 0</b>. FeatureStore는 3계층(Online/Offline/Cross), <code>ColumnStore</code> row-major f64 <b>zero-copy</b>, EMA 윈도우(갭 시 0 감쇠), <b>HeartBeat</b>가 1초 끊긴 피드 감지. 프로덕션 FeatureStoreSession×4·FeedSession×4 병렬.</p>
-        <div class="metrics">
-          <span class="metric">online 99 features</span>
-          <span class="metric">Brief 22 · Tick 21 · OrderFlow 56</span>
-          <span class="metric g">GC-zero pool</span>
-        </div>
-      </article>
-
-      <article class="ts reveal">
-        <div class="ts-h"><span class="n">03</span><span class="tt">모델 레이어</span><span class="en">PricingSession · DoubleBuffer</span></div>
-        <p class="jp prob"><span class="lab">문제</span> 한 전략이 <b>수십~99개 피처를 읽고 여러 모델을 µs 단위로 추론</b>해야 한다. 전략이 피처를 직접 계산하면 sim↔live 정합성이 깨진다.</p>
-        <p class="jp sol"><span class="lab">해결</span> PricingSession이 <code>DoubleBuffer</code>(dirty-index만 복사, lock-free)로 피처를 공급. 전략은 피처 계산 <b>금지</b> — <code>ctx.feature()</code>·<code>ctx.model()</code>·<code>ctx.feature_for(uid,name)</code> 읽기 전용 API만. 한 전략에 <b>여러 모델</b>(<code>HashMap&lt;String,Model&gt;</code>): RidgeOLS(static ~1µs) + OnlineRidge(매초 refit <code>β=(X'X+λI)⁻¹X'y</code>, rolling IC).</p>
-        <div class="metrics">
-          <span class="metric g">5 models feed→order p50 5.8µs</span>
-          <span class="metric g">10 models 7–11µs</span>
-          <span class="metric">read-only ctx API</span>
-        </div>
-      </article>
-
-      <article class="ts reveal">
-        <div class="ts-h"><span class="n">04</span><span class="tt">주문 제출</span><span class="en">order channel · state machine</span></div>
-        <p class="jp prob"><span class="lab">문제</span> 전략 결정 → 거래소 REST까지, <b>핫패스에서 할당 없이</b> 주문 수명을 안전하게 관리하려면?</p>
-        <p class="jp sol"><span class="lab">해결</span> 주문은 order Channel(Strategy→OMS)로 흘러 REST 워커가 제출. <b>상태머신</b>(<code>PlaceCreated→PlaceInFlight→Placed→Partial/Filled</code>, <code>CancelInFlight→Canceled</code>, <code>MaybeMissed</code>) — 정의되지 않은 전이는 identity로 <b>중복 이벤트를 흡수</b>. local↔exchange ID 양방향 매핑, <b>zero-alloc 오브젝트 풀</b>(v1 사전할당 50만 개).</p>
-        <div class="metrics">
-          <span class="metric">11-state FSM</span>
-          <span class="metric g">zero-alloc OioPool</span>
-          <span class="metric">local↔exchange id map</span>
-        </div>
-      </article>
-
-      <article class="ts reveal">
-        <div class="ts-h"><span class="n">05</span><span class="tt">주문 경합</span><span class="en">contention · validation</span></div>
-        <p class="jp prob"><span class="lab">문제</span> 취소가 <b>체결과 동시에</b> 날아오거나, 아직 ack 안 된 주문을 취소하거나, 같은 가격에 두 번 주문하면?</p>
-        <p class="jp sol"><span class="lab">해결</span> 배치 전 <b>8가지 검증</b>(<code>validation.rs</code>) — cancel-while-canceling, <b>SMP(자가체결 방지)</b>, duplicate-price, cancel-not-live, min qty/notional, NaN guard. <code>canceling_local_id_set</code>·<code>CancelInFlight</code>로 진행 중 취소를 추적하고, <b>stale-cancel sweep</b>가 30s+ 멈춘 취소를 강제 종료해 지갑 예약금 잠김을 해제. throttle·cancel-replace 케이던스(250ms·1Hz·10Hz).</p>
-        <div class="metrics">
-          <span class="metric">8 validation checks</span>
-          <span class="metric">SMP · dup-price guard</span>
-          <span class="metric g">stale-cancel sweep</span>
-        </div>
-      </article>
-
-      <article class="ts reveal">
-        <div class="ts-h"><span class="n">06</span><span class="tt">웹소켓 유저스트림</span><span class="en">user-stream · out-of-order · gap</span></div>
-        <p class="jp prob"><span class="lab">문제</span> 거래소 WS가 <b>체결을 ACK보다 먼저</b> 보내거나, 이벤트를 빠뜨리거나(gap), 같은 체결을 두 번 보내면?</p>
-        <p class="jp sol"><span class="lab">해결</span> ① <b>순서 역전</b> — <code>pending_ws_buffer</code>(64)가 early-fill을 버퍼링했다가 REST 매핑이 생기면 순서대로 replay. ② <b>누락</b> — <code>MissedFillDetector</code>가 체결틱이 내 호가를 관통하면 grace <b>2000ms</b> 대기 후 REST로 실체 확인. ③ <b>끊김</b> — listen-key <code>keep_alive_loop</code> + 2–5s 백오프 auto-reconnect. ④ <b>중복</b> — <code>processed_trade_id_set</code> trade_id dedup + 상태머신 중복 흡수.</p>
-        <div class="metrics">
-          <span class="metric">early-fill replay buf 64</span>
-          <span class="metric">missed-fill grace 2000ms</span>
-          <span class="metric g">trade_id dedup</span>
-        </div>
-      </article>
-
-      <article class="ts reveal">
-        <div class="ts-h"><span class="n">07</span><span class="tt">백테스트 → 포워드 → 실거래 정합성</span><span class="en">backtest · sim · live parity ⭐</span></div>
-        <p class="jp prob"><span class="lab">문제</span> smoked 백테스트에서 좋던 전략이 <b>가상거래소 포워드 → 실거래</b>로 갈수록 무너진다. 어디서 새는지 어떻게 잡나?</p>
-        <p class="jp sol"><span class="lab">해결</span> 3단계가 <b>같은 전략 바이너리</b>를 실행(backtest=MockExchange / forward=SimExchange 라이브 피드 / live). 시간 주입(<code>ctx.now_ms()</code>)으로 결정론 보장, fill 모델 사다리 EndOfQueue→QueueBased. 정합성은 <b>same-window 규칙</b> + yhat 분포 parity(<code>σ ratio∈[0.85,1.15]</code>, same-second <code>ρ≥0.85</code>) + <code>feat_hash</code> byte 일치로 검증.</p>
-        <p class="jp res"><span class="lab">결과</span> Rust↔Julia 예측 <b>Pearson 1.000000</b>(max diff 7e-9) 달성. 백테스트 +18.8bp인데 같은 구간 실거래 −29¢(~5bp 낙관 갭, 큐 포지션 미모델링)를 정직하게 기록 → "Sim PnL 숫자 자체는 믿지 말고 same-window로만 비교", 배포 전 <b>8단계 체크리스트</b> 통과 규약.</p>
-        <div class="metrics">
-          <span class="metric g">Rust↔Julia Pearson 1.000000</span>
-          <span class="metric">3-stage, same binary</span>
-          <span class="metric">8-step deploy gate</span>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<section id="archive">
-  <div class="wrap">
-    <div class="sec-h reveal"><span class="emo">📦</span><h2>Archive</h2><span class="ct">AI / ML · past</span></div>
-    <p class="reveal" style="color:var(--muted);font-size:13.5px;margin-bottom:14px">예전에 적극적으로 파고든 AI/ML · HFT 리서치 — 지금의 작업으로 이어진 토대.</p>
-    <div class="arch reveal">
-      <a class="achip" href="https://github.com/donghui-0126/ML-HFT" target="_blank" rel="noopener">ML-HFT <span>· ML HFT framework</span></a>
-      <a class="achip" href="https://github.com/donghui-0126/deepOBs" target="_blank" rel="noopener">deepOBs <span>· DL orderbook</span></a>
-      <a class="achip" href="https://github.com/donghui-0126/lob-world-models" target="_blank" rel="noopener">lob-world-models <span>· model-based RL</span></a>
-      <a class="achip" href="https://github.com/donghui-0126/lob-deep-learning" target="_blank" rel="noopener">lob-deep-learning <span>· LOB DL</span></a>
-      <a class="achip" href="https://github.com/donghui-0126/online_estimation" target="_blank" rel="noopener">online_estimation</a>
-      <a class="achip" href="https://github.com/donghui-0126/JaneStreetKaggle" target="_blank" rel="noopener">JaneStreetKaggle <span>· Bronze 🥉</span></a>
-      <a class="achip" href="https://github.com/donghui-0126/Machine-Learning-for-Factor-Investing" target="_blank" rel="noopener">ML for Factor Investing</a>
-      <a class="achip" href="https://github.com/donghui-0126/crypto-scalping-RL-Agent" target="_blank" rel="noopener">crypto-scalping-RL</a>
-      <a class="achip" href="https://github.com/donghui-0126/Hello-RUST-World" target="_blank" rel="noopener">Hello-RUST-World <span>· Rust 입문</span></a>
-    </div>
-  </div>
-</section>
-
-<section id="awards">
-  <div class="wrap">
-    <div class="sec-h reveal"><span class="emo">🏅</span><h2>Awards &amp; Experience</h2></div>
-    <div class="reveal">
-      <div class="aw"><span class="y">2025</span><span class="c">Jane Street — Real-Time Market Data Forecasting (Kaggle)</span><span class="r" style="margin-left:auto">Bronze 🥉</span></div>
-      <div class="aw"><span class="y">2024</span><span class="c">BDA × ASCEND — Bitcoin Volatility Prediction</span><span class="r" style="margin-left:auto">우수상</span></div>
-      <div class="aw"><span class="y">2023</span><span class="c">WorldQuant Alphaton Korea</span><span class="r" style="margin-left:auto">3rd 🥉</span></div>
-      <div class="aw"><span class="y">2023</span><span class="c">FSI Data Challenge — EV Customer Prediction</span><span class="r" style="margin-left:auto">우수상</span></div>
-    </div>
-    <div class="pub reveal" style="margin-top:18px">
-      <b>Publication</b> · Hyeong-jin Son, <b>Lim Donghui</b>, &amp; Young-woo Han (2023).
-      <i>Reinforcement learning portfolio optimization based on portfolio theory.</i> 한국정보처리학회 학술대회논문집, 30(2), 961–962.
-    </div>
-    <div class="reveal">
-      <p class="exp"><b>KHU AIMS LAB</b> · Undergraduate Researcher (2024) — Combinatorial Optimization with RL (TSP, VRP)</p>
-      <p class="exp"><b>모두의연구소 PISTAR LAB</b> (2024) — Algorithm Trading with AI</p>
-      <p class="exp"><b>KHUDA 3–4기</b> Financial Track (2023) · <b>금융공학 학회 UFEA</b> 36기</p>
-    </div>
-  </div>
-</section>
+<main id="content" class="wrap"><p class="loading">불러오는 중…</p></main>
 
 <footer>
   <div class="wrap">© 2026 Donghui Lim · 임동휘 &nbsp;·&nbsp; lukedonghui@gmail.com</div>
 </footer>
 
+<!-- content is authored in content.md and rendered at runtime (no build step) -->
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
 <script>
-(function(){
+(async function(){
+  const el=document.getElementById('content');
+  try{
+    const res=await fetch('content.md?'+Date.now());           // cache-bust so commits reflect immediately
+    if(!res.ok) throw new Error('content.md '+res.status);
+    const md=await res.text();
+    marked.setOptions({gfm:true,breaks:false});
+    el.innerHTML=marked.parse(md);
+  }catch(e){
+    el.innerHTML='<p style="color:var(--red);font-family:var(--mono);font-size:13px;padding:30px 0">'
+      +'콘텐츠를 불러오지 못했습니다: '+e.message+'</p>';
+    return;
+  }
+  // reveal-on-scroll for any .reveal blocks in the rendered content
   const obs=new IntersectionObserver((es)=>{
     es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target);} });
   },{threshold:.08});
-  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-})();
-</script>
-
-<!-- ============ in-page admin editor (password + token → commit) ============ -->
-<style>
-#amrd-fab{position:fixed;right:16px;bottom:16px;z-index:9998;width:38px;height:38px;border-radius:50%;border:1px solid var(--border-2);background:#fff;color:var(--muted);font-size:15px;cursor:pointer;opacity:.32;transition:.2s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px -6px rgba(0,0,0,.3)}
-#amrd-fab:hover{opacity:1;color:var(--accent);border-color:var(--accent)}
-.amrd-modal{position:fixed;inset:0;z-index:9999;background:rgba(15,20,30,.45);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:20px}
-.amrd-box{background:#fff;border:1px solid var(--border-2);border-radius:14px;max-width:380px;width:100%;padding:22px;box-shadow:0 20px 60px -20px rgba(0,0,0,.4);font-family:var(--sans)}
-.amrd-box h3{font-size:16px;font-weight:700;margin-bottom:4px}
-.amrd-box p{font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.55}
-.amrd-box input{width:100%;font-family:var(--mono);font-size:13px;padding:9px 11px;border:1px solid var(--border-2);border-radius:8px;margin-bottom:10px;background:var(--bg-soft)}
-.amrd-box input:focus{outline:none;border-color:var(--accent)}
-.amrd-row{display:flex;gap:8px;flex-wrap:wrap}
-.amrd-btn{font-family:var(--sans);font-size:13px;font-weight:600;padding:9px 14px;border-radius:8px;border:1px solid var(--border-2);background:#fff;color:var(--text);cursor:pointer;transition:.15s}
-.amrd-btn:hover{border-color:var(--accent);color:var(--accent)}
-.amrd-btn.pri{background:var(--accent);color:#fff;border-color:var(--accent)}
-.amrd-btn.pri:hover{background:#3050d8;color:#fff}
-.amrd-msg{font-size:12px;margin-top:8px;min-height:15px}
-.amrd-msg.ok{color:var(--green)} .amrd-msg.err{color:var(--red)}
-#amrd-bar{position:fixed;left:0;right:0;bottom:0;z-index:9998;background:#1f2328;color:#fff;display:flex;gap:8px;align-items:center;padding:9px 16px;flex-wrap:wrap;font-family:var(--sans);font-size:13px;box-shadow:0 -4px 20px -8px rgba(0,0,0,.4)}
-#amrd-bar .lbl{font-weight:700;margin-right:6px}
-#amrd-bar .sp{flex:1}
-#amrd-bar button{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:7px;border:1px solid #3a4250;background:#2b313b;color:#fff;cursor:pointer}
-#amrd-bar button:hover{background:#3a4250}
-#amrd-bar button.pri{background:var(--accent);border-color:var(--accent)}
-body.amrd-editing [contenteditable="true"]{outline:none}
-body.amrd-editing #top,body.amrd-editing section,body.amrd-editing footer{outline:1px dashed rgba(66,99,235,.25)}
-</style>
-<script>
-(function(){
-  const REPO="donghui-0126/donghui-0126.github.io", FILE="index.html", BRANCH="main";
-  const LS_PW="amrd_pw_hash", LS_TOK="amrd_gh_token";
-  let editing=false;
-
-  async function sha256(s){
-    const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
-    return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-  }
-  async function checkPw(input){
-    const stored=localStorage.getItem(LS_PW);
-    if(!stored) return input==="0000";            // 초기 비밀번호
-    return (await sha256(input))===stored;
-  }
-  function b64utf8(str){
-    const bytes=new TextEncoder().encode(str); let bin=""; const CH=0x8000;
-    for(let i=0;i<bytes.length;i+=CH){ bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+CH)); }
-    return btoa(bin);
-  }
-  function modal(html){
-    const wrap=document.createElement("div"); wrap.className="amrd-modal";
-    const box=document.createElement("div"); box.className="amrd-box"; box.innerHTML=html;
-    wrap.appendChild(box);
-    wrap.addEventListener("mousedown",e=>{ if(e.target===wrap) wrap.remove(); });
-    document.body.appendChild(wrap); return wrap;
-  }
-  function closeModals(){ document.querySelectorAll(".amrd-modal").forEach(m=>m.remove()); }
-
-  function openLogin(){
-    const m=modal(
-      '<h3>🔒 편집 모드</h3>'+
-      '<p>비밀번호를 입력하세요. (초기값 <b>0000</b>)</p>'+
-      '<input id="amrd-pw" type="password" placeholder="비밀번호" autocomplete="off" />'+
-      '<div class="amrd-row"><button class="amrd-btn pri" id="amrd-pw-ok">잠금 해제</button>'+
-      '<button class="amrd-btn" id="amrd-pw-cancel">취소</button></div>'+
-      '<div class="amrd-msg" id="amrd-pw-msg"></div>');
-    const inp=m.querySelector("#amrd-pw"); inp.focus();
-    const msg=m.querySelector("#amrd-pw-msg");
-    async function go(){
-      if(await checkPw(inp.value)){ closeModals(); enterEdit(); }
-      else{ msg.className="amrd-msg err"; msg.textContent="비밀번호가 틀렸습니다."; inp.select(); }
-    }
-    m.querySelector("#amrd-pw-ok").onclick=go;
-    m.querySelector("#amrd-pw-cancel").onclick=closeModals;
-    inp.onkeydown=e=>{ if(e.key==="Enter") go(); };
-  }
-
-  function openChangePw(){
-    const m=modal(
-      '<h3>🔒 비밀번호 변경</h3>'+
-      '<p>새 비밀번호는 이 브라우저에만 저장됩니다(SHA-256 해시).</p>'+
-      '<input id="amrd-np1" type="password" placeholder="새 비밀번호" autocomplete="new-password"/>'+
-      '<input id="amrd-np2" type="password" placeholder="새 비밀번호 확인" autocomplete="new-password"/>'+
-      '<div class="amrd-row"><button class="amrd-btn pri" id="amrd-np-ok">변경</button>'+
-      '<button class="amrd-btn" id="amrd-np-cancel">취소</button></div>'+
-      '<div class="amrd-msg" id="amrd-np-msg"></div>');
-    const msg=m.querySelector("#amrd-np-msg");
-    m.querySelector("#amrd-np-ok").onclick=async()=>{
-      const a=m.querySelector("#amrd-np1").value, b=m.querySelector("#amrd-np2").value;
-      if(a.length<1){ msg.className="amrd-msg err"; msg.textContent="비밀번호를 입력하세요."; return; }
-      if(a!==b){ msg.className="amrd-msg err"; msg.textContent="두 입력이 일치하지 않습니다."; return; }
-      localStorage.setItem(LS_PW, await sha256(a));
-      msg.className="amrd-msg ok"; msg.textContent="변경되었습니다 ✓";
-      setTimeout(closeModals,800);
-    };
-    m.querySelector("#amrd-np-cancel").onclick=closeModals;
-  }
-
-  function openToken(){
-    const cur=localStorage.getItem(LS_TOK);
-    const m=modal(
-      '<h3>🔑 GitHub 토큰</h3>'+
-      '<p>저장(커밋)을 위해 이 저장소 <b>Contents 쓰기</b> 권한이 있는 GitHub Personal Access Token이 필요합니다. 이 브라우저에만 저장됩니다.</p>'+
-      '<input id="amrd-tok" type="password" placeholder="ghp_... 또는 github_pat_..." value="'+(cur||"")+'" autocomplete="off"/>'+
-      '<div class="amrd-row"><button class="amrd-btn pri" id="amrd-tok-ok">저장</button>'+
-      (cur?'<button class="amrd-btn" id="amrd-tok-del">삭제</button>':'')+
-      '<button class="amrd-btn" id="amrd-tok-cancel">취소</button></div>'+
-      '<div class="amrd-msg" id="amrd-tok-msg"></div>');
-    m.querySelector("#amrd-tok-ok").onclick=()=>{
-      const v=m.querySelector("#amrd-tok").value.trim();
-      if(v) localStorage.setItem(LS_TOK,v); closeModals();
-    };
-    const del=m.querySelector("#amrd-tok-del"); if(del) del.onclick=()=>{ localStorage.removeItem(LS_TOK); closeModals(); };
-    m.querySelector("#amrd-tok-cancel").onclick=closeModals;
-  }
-
-  function enterEdit(){
-    editing=true;
-    document.querySelectorAll(".reveal").forEach(n=>n.classList.add("in")); // 전부 보이게
-    document.body.classList.add("amrd-editing");
-    document.body.setAttribute("contenteditable","true");
-    document.body.setAttribute("spellcheck","false");
-    buildBar();
-  }
-  function exitEdit(){
-    editing=false;
-    document.body.classList.remove("amrd-editing");
-    document.body.removeAttribute("contenteditable");
-    document.body.removeAttribute("spellcheck");
-    const bar=document.getElementById("amrd-bar"); if(bar) bar.remove();
-  }
-  function buildBar(){
-    if(document.getElementById("amrd-bar")) return;
-    const bar=document.createElement("div"); bar.id="amrd-bar"; bar.setAttribute("contenteditable","false");
-    bar.innerHTML='<span class="lbl">✏️ 편집 모드</span>'+
-      '<span class="amrd-msg" id="amrd-bar-msg" style="color:#9aa4b2;margin:0"></span>'+
-      '<span class="sp"></span>'+
-      '<button id="amrd-tok-btn">🔑 토큰</button>'+
-      '<button id="amrd-pwchg-btn">🔒 비밀번호 변경</button>'+
-      '<button class="pri" id="amrd-save-btn">💾 저장(커밋)</button>'+
-      '<button id="amrd-exit-btn">✕ 종료</button>';
-    document.body.appendChild(bar);
-    bar.querySelector("#amrd-tok-btn").onclick=openToken;
-    bar.querySelector("#amrd-pwchg-btn").onclick=openChangePw;
-    bar.querySelector("#amrd-exit-btn").onclick=exitEdit;
-    bar.querySelector("#amrd-save-btn").onclick=save;
-  }
-  function barMsg(t,cls){ const m=document.getElementById("amrd-bar-msg"); if(m){ m.textContent=t; m.style.color=cls==="err"?"#ff8b8b":cls==="ok"?"#7ee2a8":"#9aa4b2"; } }
-
-  function cleanHtml(){
-    const doc=document.documentElement.cloneNode(true);
-    doc.querySelectorAll("#amrd-bar,#amrd-fab,.amrd-modal").forEach(n=>n.remove());
-    const b=doc.querySelector("body");
-    if(b){ b.removeAttribute("contenteditable"); b.removeAttribute("spellcheck"); b.classList.remove("amrd-editing"); }
-    doc.querySelectorAll(".reveal.in").forEach(n=>n.classList.remove("in"));
-    doc.querySelectorAll('[contenteditable]').forEach(n=>n.removeAttribute("contenteditable"));
-    return "<!DOCTYPE html>\n"+doc.outerHTML+"\n";
-  }
-
-  async function save(){
-    const token=localStorage.getItem(LS_TOK);
-    if(!token){ barMsg("토큰을 먼저 설정하세요.","err"); openToken(); return; }
-    barMsg("저장 중…");
-    const headers={ "Authorization":"token "+token, "Accept":"application/vnd.github+json" };
-    try{
-      const g=await fetch("https://api.github.com/repos/"+REPO+"/contents/"+FILE+"?ref="+BRANCH,{headers});
-      if(!g.ok) throw new Error("sha 조회 실패 ("+g.status+") — 토큰 권한 확인");
-      const sha=(await g.json()).sha;
-      const body={ message:"edit via in-page editor", content:b64utf8(cleanHtml()), sha:sha, branch:BRANCH };
-      const p=await fetch("https://api.github.com/repos/"+REPO+"/contents/"+FILE,{method:"PUT",headers,body:JSON.stringify(body)});
-      if(!p.ok){ const e=await p.json().catch(()=>({})); throw new Error(e.message||("HTTP "+p.status)); }
-      const r=await p.json();
-      barMsg("저장됨 ✓ "+r.commit.sha.slice(0,7)+" · 1분 내 반영","ok");
-    }catch(err){ barMsg("실패: "+err.message,"err"); }
-  }
-
-  document.addEventListener("click",e=>{ if(editing){ const a=e.target.closest("a"); if(a) e.preventDefault(); } },true);
-
-  const fab=document.createElement("button"); fab.id="amrd-fab"; fab.title="편집 (관리자)"; fab.textContent="🔒";
-  fab.onclick=openLogin; document.body.appendChild(fab);
-  if(location.hash==="#edit") openLogin();
+  document.querySelectorAll('.reveal').forEach(x=>obs.observe(x));
 })();
 </script>
 </body>
