@@ -270,10 +270,10 @@
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">01</span><span class="tt">데이터 수집</span><span class="en">data-save · parquet archival</span></div>
-    <p class="jp prob"><span class="lab">문제</span> 멀티 거래소 원시 틱을 손실 없이 보관하면서, <b>수집 부하 자체가 데이터를 오염시키지 않게</b> 하려면?</p>
-    <p class="jp sol"><span class="lab">해결</span> <b>3,349 심볼 × 12 거래소</b>를 시간단위 Parquet 파티션(<code>&lt;거래소&gt;/&lt;심볼&gt;/&lt;YYYYMMDD_HH&gt;</code>)으로 아카이빙, watchdog 싱글톤으로 단일 인스턴스 강제. 60k msg/sec 고부하에서 OS NIC batching이 <b>RX→consumer lag p99를 1,140ms</b>까지 밀어 1Hz 스냅샷이 stale해지는 "silent contamination"을 측정으로 발견 → 프로세스당 <b>≤50k msg/sec ≈ 800심볼</b> 안전선으로 분할.</p>
+    <p class="jp prob"><span class="lab">문제</span> 멀티 거래소 원시 틱을 <b>손실 없이</b> 보관하면서,<br><b>수집 부하 자체가 데이터를 오염시키지 않게</b> 하려면?</p>
+    <p class="jp sol"><span class="lab">해결</span> 시작은 <b>Tardis</b> 외부 히스토리 데이터로 마이크로구조를 분석한 것.<br>그런데 <b>막상 내가 실시간으로 수집한 데이터와 차이가 생각보다 커서</b>(체결·호가 타이밍, 누락 패턴) 직접 수집 인프라를 구축했다.<br><b>3,349 심볼 × 12 거래소</b>를 시간단위 Parquet 파티션(<code>&lt;거래소&gt;/&lt;심볼&gt;/&lt;YYYYMMDD_HH&gt;</code>)으로 아카이빙,<br>watchdog 싱글톤으로 단일 인스턴스 강제.<br>60k msg/sec 고부하에서 OS NIC batching이 <b>RX→consumer lag p99를 1,140ms</b>까지 밀어<br>1Hz 스냅샷이 stale해지는 "silent contamination"을 측정으로 발견<br>→ 프로세스당 <b>≤50k msg/sec ≈ 800심볼</b> 안전선으로 분할.</p>
     <div class="metrics">
-      <span class="metric">3,349 심볼 × 12 거래소</span>
+      <span class="metric g">Tardis → 자체 수집</span>
       <span class="metric g">lag p99 1140ms → 95ms</span>
       <span class="metric">≤50k msg/sec / proc</span>
     </div>
@@ -281,8 +281,8 @@
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">02</span><span class="tt">피더 &amp; 피처 스토어</span><span class="en">feeder · FeatureStore</span></div>
-    <p class="jp prob"><span class="lab">문제</span> 초당 수만 메시지를 받아 <b>수십~수백 피처를 GC·락 없이</b> 실시간 계산하려면?</p>
-    <p class="jp sol"><span class="lab">해결</span> 피더(WS producer) → MatchingEngine → Channel 경쟁 소비. 오브젝트 풀(<code>get_from_pool!</code>/<code>release_to_pool!</code>)·<code>StaticRingBuffer</code>로 <b>heap 할당 0</b>. FeatureStore는 3계층(Online/Offline/Cross)이고, 피처가 다른 피처를 구독(<code>use_*_feature_name</code>)하는 <b>의존성 DAG</b> 구조라 <b>새 피처를 선언만으로 쉽게 추가</b> — <b>틱마다 갱신되는 실시간(Online)</b> 피처와 <b>1초 주기로 갱신되는(Offline)</b> 피처를 분리해 연산 부하를 적절히 배분. <code>ColumnStore</code> row-major f64 <b>zero-copy</b>, EMA 윈도우(갭 시 0 감쇠), <b>HeartBeat</b>가 1초 끊긴 피드 감지. 프로덕션 FeatureStoreSession×4·FeedSession×4 병렬.</p>
+    <p class="jp prob"><span class="lab">문제</span> 초당 수만 메시지를 받아<br><b>수십~수백 피처를 GC·락 없이</b> 실시간 계산하려면?</p>
+    <p class="jp sol"><span class="lab">해결</span> 피더(WS producer) → MatchingEngine → Channel 경쟁 소비.<br>오브젝트 풀(<code>get_from_pool!</code>/<code>release_to_pool!</code>)·<code>StaticRingBuffer</code>로 <b>heap 할당 0</b>.<br>FeatureStore는 3계층(Online/Offline/Cross)이고, 피처가 다른 피처를 구독(<code>use_*_feature_name</code>)하는 <b>의존성 DAG</b> 구조라 <b>새 피처를 선언만으로 쉽게 추가</b>.<br><b>틱마다 갱신되는 실시간(Online)</b> 피처와 <b>1초 주기로 갱신되는(Offline)</b> 피처를 분리해 연산 부하를 적절히 배분.<br><code>ColumnStore</code> row-major f64 <b>zero-copy</b>, EMA 윈도우(갭 시 0 감쇠), <b>HeartBeat</b>가 1초 끊긴 피드 감지.<br>프로덕션 FeatureStoreSession×4·FeedSession×4 병렬.</p>
     <div class="metrics">
       <span class="metric g">DAG 피처 의존성</span>
       <span class="metric">realtime ↔ 1s 분리</span>
@@ -293,8 +293,8 @@
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">03</span><span class="tt">모델 레이어</span><span class="en">PricingSession · DoubleBuffer</span></div>
-    <p class="jp prob"><span class="lab">문제</span> 한 전략이 <b>수십~99개 피처를 읽고 여러 모델을 µs 단위로 추론</b>해야 한다. 전략이 피처를 직접 계산하면 sim↔live 정합성이 깨진다.</p>
-    <p class="jp sol"><span class="lab">해결</span> PricingSession이 <code>DoubleBuffer</code>(dirty-index만 복사, lock-free)로 피처를 공급. 전략은 피처 계산 <b>금지</b> — <code>ctx.feature()</code>·<code>ctx.model()</code>·<code>ctx.feature_for(uid,name)</code> 읽기 전용 API만. 한 전략에 <b>여러 모델</b>(<code>HashMap&lt;String,Model&gt;</code>): RidgeOLS(static ~1µs) + OnlineRidge(매초 refit <code>β=(X'X+λI)⁻¹X'y</code>, rolling IC).</p>
+    <p class="jp prob"><span class="lab">문제</span> 한 전략이 <b>수십~99개 피처를 읽고 여러 모델을 µs 단위로 추론</b>해야 한다.<br>전략이 피처를 직접 계산하면 sim↔live 정합성이 깨진다.</p>
+    <p class="jp sol"><span class="lab">해결</span> PricingSession이 <code>DoubleBuffer</code>(dirty-index만 복사, lock-free)로 피처를 공급.<br>전략은 피처 계산 <b>금지</b> — <code>ctx.feature()</code>·<code>ctx.model()</code>·<code>ctx.feature_for(uid,name)</code> 읽기 전용 API만.<br>한 전략에 <b>여러 모델</b>(<code>HashMap&lt;String,Model&gt;</code>)을 등록해 µs 단위로 병렬 추론.</p>
     <div class="metrics">
       <span class="metric g">5 models feed→order p50 5.8µs</span>
       <span class="metric g">10 models 7–11µs</span>
@@ -304,8 +304,8 @@
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">04</span><span class="tt">주문 제출</span><span class="en">order channel · state machine</span></div>
-    <p class="jp prob"><span class="lab">문제</span> 전략 결정 → 거래소 REST까지, <b>핫패스에서 할당 없이</b> 주문 수명을 안전하게 관리하려면?</p>
-    <p class="jp sol"><span class="lab">해결</span> 주문은 order Channel(Strategy→OMS)로 흘러 REST 워커가 제출. <b>상태머신</b>(<code>PlaceCreated→PlaceInFlight→Placed→Partial/Filled</code>, <code>CancelInFlight→Canceled</code>, <code>MaybeMissed</code>) — 정의되지 않은 전이는 identity로 <b>중복 이벤트를 흡수</b>. local↔exchange ID 양방향 매핑, <b>zero-alloc 오브젝트 풀</b>(v1 사전할당 50만 개).</p>
+    <p class="jp prob"><span class="lab">문제</span> 전략 결정 → 거래소 REST까지,<br><b>핫패스에서 할당 없이</b> 주문 수명을 안전하게 관리하려면?</p>
+    <p class="jp sol"><span class="lab">해결</span> 주문은 order Channel(Strategy→OMS)로 흘러 REST 워커가 제출.<br><b>상태머신</b>(<code>PlaceCreated→PlaceInFlight→Placed→Partial/Filled</code>, <code>CancelInFlight→Canceled</code>, <code>MaybeMissed</code>)<br>— 정의되지 않은 전이는 identity로 <b>중복 이벤트를 흡수</b>.<br>local↔exchange ID 양방향 매핑, <b>zero-alloc 오브젝트 풀</b>(v1 사전할당 50만 개).</p>
     <div class="metrics">
       <span class="metric">11-state FSM</span>
       <span class="metric g">zero-alloc OioPool</span>
@@ -315,8 +315,8 @@
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">05</span><span class="tt">주문 경합</span><span class="en">contention · validation</span></div>
-    <p class="jp prob"><span class="lab">문제</span> 취소가 <b>체결과 동시에</b> 날아오거나, 아직 ack 안 된 주문을 취소하거나, 같은 가격에 두 번 주문하면?</p>
-    <p class="jp sol"><span class="lab">해결</span> 배치 전 <b>8가지 검증</b>(<code>validation.rs</code>) — cancel-while-canceling, <b>SMP(자가체결 방지)</b>, duplicate-price, cancel-not-live, min qty/notional, NaN guard. <code>canceling_local_id_set</code>·<code>CancelInFlight</code>로 진행 중 취소를 추적하고, <b>stale-cancel sweep</b>가 30s+ 멈춘 취소를 강제 종료해 지갑 예약금 잠김을 해제. throttle·cancel-replace 케이던스(250ms·1Hz·10Hz).</p>
+    <p class="jp prob"><span class="lab">문제</span> 취소가 <b>체결과 동시에</b> 날아오거나,<br>아직 ack 안 된 주문을 취소하거나, 같은 가격에 두 번 주문하면?</p>
+    <p class="jp sol"><span class="lab">해결</span> 배치 전 <b>8가지 검증</b>(<code>validation.rs</code>)<br>— cancel-while-canceling, <b>SMP(자가체결 방지)</b>, duplicate-price, cancel-not-live, min qty/notional, NaN guard.<br><code>canceling_local_id_set</code>·<code>CancelInFlight</code>로 진행 중 취소를 추적하고,<br><b>stale-cancel sweep</b>가 30s+ 멈춘 취소를 강제 종료해 지갑 예약금 잠김을 해제.<br>throttle·cancel-replace 케이던스(250ms·1Hz·10Hz).</p>
     <div class="metrics">
       <span class="metric">8 validation checks</span>
       <span class="metric">SMP · dup-price guard</span>
@@ -326,8 +326,8 @@
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">06</span><span class="tt">웹소켓 유저스트림</span><span class="en">user-stream · out-of-order · gap</span></div>
-    <p class="jp prob"><span class="lab">문제</span> 거래소 WS가 <b>체결을 ACK보다 먼저</b> 보내거나, 이벤트를 빠뜨리거나(gap), 같은 체결을 두 번 보내면?</p>
-    <p class="jp sol"><span class="lab">해결</span> ① <b>순서 역전</b> — <code>pending_ws_buffer</code>(64)가 early-fill을 버퍼링했다가 REST 매핑이 생기면 순서대로 replay. ② <b>누락</b> — <code>MissedFillDetector</code>가 체결틱이 내 호가를 관통하면 grace <b>2000ms</b> 대기 후 REST로 실체 확인. ③ <b>끊김</b> — listen-key <code>keep_alive_loop</code> + 2–5s 백오프 auto-reconnect. ④ <b>중복</b> — <code>processed_trade_id_set</code> trade_id dedup + 상태머신 중복 흡수.</p>
+    <p class="jp prob"><span class="lab">문제</span> 거래소 WS가 <b>체결을 ACK보다 먼저</b> 보내거나,<br>이벤트를 빠뜨리거나(gap), 같은 체결을 두 번 보내면?</p>
+    <p class="jp sol"><span class="lab">해결</span> ① <b>순서 역전</b> — <code>pending_ws_buffer</code>(64)가 early-fill을 버퍼링했다가 REST 매핑이 생기면 순서대로 replay.<br>② <b>누락</b> — <code>MissedFillDetector</code>가 체결틱이 내 호가를 관통하면 grace <b>2000ms</b> 대기 후 REST로 실체 확인.<br>③ <b>끊김</b> — listen-key <code>keep_alive_loop</code> + 2–5s 백오프 auto-reconnect.<br>④ <b>중복</b> — <code>processed_trade_id_set</code> trade_id dedup + 상태머신 중복 흡수.</p>
     <div class="metrics">
       <span class="metric">early-fill replay buf 64</span>
       <span class="metric">missed-fill grace 2000ms</span>
@@ -337,9 +337,9 @@
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">07</span><span class="tt">백테스트 → 포워드 → 실거래 정합성</span><span class="en">backtest · sim · live parity ⭐</span></div>
-    <p class="jp prob"><span class="lab">문제</span> smoked 백테스트에서 좋던 전략이 <b>가상거래소 포워드 → 실거래</b>로 갈수록 무너진다. 어디서 새는지 어떻게 잡나?</p>
-    <p class="jp sol"><span class="lab">해결</span> 3단계가 <b>같은 전략 바이너리</b>를 실행(backtest=MockExchange / forward=SimExchange 라이브 피드 / live). 시간 주입(<code>ctx.now_ms()</code>)으로 결정론 보장, fill 모델 사다리 EndOfQueue→QueueBased. 정합성은 <b>same-window 규칙</b> + yhat 분포 parity(<code>σ ratio∈[0.85,1.15]</code>, same-second <code>ρ≥0.85</code>) + <code>feat_hash</code> byte 일치로 검증.</p>
-    <p class="jp res"><span class="lab">결과</span> Rust↔Julia 예측 <b>Pearson 1.000000</b>(max diff 7e-9) 달성. 백테스트 +18.8bp인데 같은 구간 실거래 −29¢(~5bp 낙관 갭, 큐 포지션 미모델링)를 정직하게 기록 → "Sim PnL 숫자 자체는 믿지 말고 same-window로만 비교", 배포 전 <b>8단계 체크리스트</b> 통과 규약.</p>
+    <p class="jp prob"><span class="lab">문제</span> 백테스트에서 좋던 전략이 <b>가상거래소 포워드 → 실거래</b>로 갈수록 무너진다.<br>어디서 새는지 어떻게 잡나?</p>
+    <p class="jp sol"><span class="lab">해결</span> 3단계가 <b>같은 전략 바이너리</b>를 실행 — backtest=MockExchange / forward=<b>SimExchange</b>(라이브 피드) / live.<br>핵심은 <b>가상거래소(SimExchange)를 실제에 가깝게</b> 만든 것:<br>· <b>큐 포지션(queue position)</b>을 추적하는 fill 모델 사다리(EndOfQueue→QueueBased)로 내 호가 앞 물량이 빠진 만큼만 체결,<br>· <b>레이턴시(주문 왕복·피드 지연)</b>를 주입해 의사결정-체결 사이 시차를 재현,<br>· 시간 주입(<code>ctx.now_ms()</code>)으로 <b>결정론</b> 보장.<br>정합성은 <b>same-window 규칙</b> + yhat 분포 parity(<code>σ ratio∈[0.85,1.15]</code>, same-second <code>ρ≥0.85</code>) + <code>feat_hash</code> byte 일치로 검증.</p>
+    <p class="jp res"><span class="lab">결과</span> Rust↔Julia 예측 <b>Pearson 1.000000</b>(max diff 7e-9) 달성.<br>그래도 백테스트 +18.8bp vs 같은 구간 실거래 −29¢(~5bp 낙관 갭)는<br>큐 포지션을 완벽히 맞추지 못한 잔차로 보고 <b>정직하게 기록</b>.<br>→ "Sim PnL 숫자 자체는 믿지 말고 same-window로만 비교", 배포 전 <b>8단계 체크리스트</b> 통과 규약.</p>
     <div class="metrics">
       <span class="metric g">Rust↔Julia Pearson 1.000000</span>
       <span class="metric">3-stage, same binary</span>
@@ -354,10 +354,6 @@
 예전에 적극적으로 파고든 AI/ML · HFT 리서치 — 지금의 작업으로 이어진 토대.
 
 <div class="arch">
-  <a class="achip" href="https://github.com/donghui-0126/ML-HFT" target="_blank" rel="noopener">ML-HFT <span>· ML HFT framework</span></a>
-  <a class="achip" href="https://github.com/donghui-0126/deepOBs" target="_blank" rel="noopener">deepOBs <span>· DL orderbook</span></a>
-  <a class="achip" href="https://github.com/donghui-0126/lob-world-models" target="_blank" rel="noopener">lob-world-models <span>· model-based RL</span></a>
-  <a class="achip" href="https://github.com/donghui-0126/lob-deep-learning" target="_blank" rel="noopener">lob-deep-learning <span>· LOB DL</span></a>
   <a class="achip" href="https://github.com/donghui-0126/online_estimation" target="_blank" rel="noopener">online_estimation</a>
   <a class="achip" href="https://github.com/donghui-0126/JaneStreetKaggle" target="_blank" rel="noopener">JaneStreetKaggle <span>· Bronze 🥉</span></a>
   <a class="achip" href="https://github.com/donghui-0126/Machine-Learning-for-Factor-Investing" target="_blank" rel="noopener">ML for Factor Investing</a>
