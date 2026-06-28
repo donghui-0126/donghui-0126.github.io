@@ -282,10 +282,11 @@
   <article class="ts reveal">
     <div class="ts-h"><span class="n">02</span><span class="tt">피더 &amp; 피처 스토어</span><span class="en">feeder · FeatureStore</span></div>
     <p class="jp prob"><span class="lab">문제</span> 초당 수만 메시지를 받아 <b>수십~수백 피처를 GC·락 없이</b> 실시간 계산하려면?</p>
-    <p class="jp sol"><span class="lab">해결</span> 피더(WS producer) → MatchingEngine → Channel 경쟁 소비. 오브젝트 풀(<code>get_from_pool!</code>/<code>release_to_pool!</code>)·<code>StaticRingBuffer</code>로 <b>heap 할당 0</b>. FeatureStore는 3계층(Online/Offline/Cross), <code>ColumnStore</code> row-major f64 <b>zero-copy</b>, EMA 윈도우(갭 시 0 감쇠), <b>HeartBeat</b>가 1초 끊긴 피드 감지. 프로덕션 FeatureStoreSession×4·FeedSession×4 병렬.</p>
+    <p class="jp sol"><span class="lab">해결</span> 피더(WS producer) → MatchingEngine → Channel 경쟁 소비. 오브젝트 풀(<code>get_from_pool!</code>/<code>release_to_pool!</code>)·<code>StaticRingBuffer</code>로 <b>heap 할당 0</b>. FeatureStore는 3계층(Online/Offline/Cross)이고, 피처가 다른 피처를 구독(<code>use_*_feature_name</code>)하는 <b>의존성 DAG</b> 구조라 <b>새 피처를 선언만으로 쉽게 추가</b> — <b>틱마다 갱신되는 실시간(Online)</b> 피처와 <b>1초 주기로 갱신되는(Offline)</b> 피처를 분리해 연산 부하를 적절히 배분. <code>ColumnStore</code> row-major f64 <b>zero-copy</b>, EMA 윈도우(갭 시 0 감쇠), <b>HeartBeat</b>가 1초 끊긴 피드 감지. 프로덕션 FeatureStoreSession×4·FeedSession×4 병렬.</p>
     <div class="metrics">
+      <span class="metric g">DAG 피처 의존성</span>
+      <span class="metric">realtime ↔ 1s 분리</span>
       <span class="metric">online 99 features</span>
-      <span class="metric">Brief 22 · Tick 21 · OrderFlow 56</span>
       <span class="metric g">GC-zero pool</span>
     </div>
   </article>
