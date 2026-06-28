@@ -223,6 +223,25 @@
   </article>
 
   <article class="proj reveal">
+    <div class="proj-meta"><span class="yr">2026</span> · Julia · Rust · LLM <span class="badge priv">Private</span></div>
+    <div class="proj-title">amuredo-alphafactor</div>
+    <p class="proj-desc">
+      크립토 선물 <b>알파 리서치 플랫폼</b>. 가설(hypothesis) 하나를 넣으면 <b>RAG → LLM 가설 생성 → Julia 배치 실험 → 해석 → accept/decline 판결 → 지식그래프 저장</b>까지 7단계를 자동화.
+      Julia 서버가 <b>537개 코인 × 227K 바</b>를 들고 cross-sectional IC를 돌리고, 가설은 <b>amure-db 지식그래프</b>(subset/superset/reference 엣지·역방향 자동)로 축적합니다.
+    </p>
+    <div class="metrics">
+      <span class="metric">537 symbols × 227K bars</span>
+      <span class="metric">288 가설 / 6 팩터</span>
+      <span class="metric">6 실험 (고정 3 + LLM-guided 3)</span>
+    </div>
+    <div class="sub">리서치한 팩터</div>
+    <p class="proj-desc" style="margin-top:0">premium(basis·김프) · open interest · funding rate · return momentum · volume · vwap · price-OI momentum — Universe/Regime/Temporal cross-sectional IC로 검증.</p>
+    <div class="sub">Long-Short 라이브 테스트 (사이드 프로젝트)</div>
+    <p class="proj-desc" style="margin-top:0">검증된 <b>크로스섹셔널 롱숏 전략 4종</b>을 바이낸스 선물에 <b>실시간 forward 모니터링</b>(5분 REST 폴링·view-only) — quintile L/S · meme Top-50 · 12h hold.</p>
+    <div class="stack"><span class="t">Julia</span><span class="t">Rust (amure-db)</span><span class="t">Python</span><span class="t">LLM</span></div>
+  </article>
+
+  <article class="proj reveal">
     <div class="proj-meta"><span class="yr">2024 – 2026</span> · Quant Research</div>
     <div class="proj-title">Quant Research &amp; Forward Tests</div>
     <p class="proj-desc">
