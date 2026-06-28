@@ -41,86 +41,6 @@
 
 **경희대학교 산업경영공학과** · *Kyung Hee University, Industrial &amp; Management Systems Engineering* — 학부 재학 중 · 2027 졸업예정
 
-<h2 id="journey">🧭 The Journey</h2>
-
-데이터 분석으로 출발해 **강화학습에서 트레이딩에 빠진** 뒤, 매 단계마다 한계에 부딪히고 그걸 풀려고 다음 도구로 옮겨간 궤적입니다.<br>예측 → 의사결정 → 실행, Python → Julia → Rust.
-
-<div class="journey">
-
-  <div class="jnode reveal">
-    <div class="jcard">
-      <div class="jyear">2022 – 2023</div>
-      <div class="jhead">AI · 데이터 분석</div>
-      <p class="jp prob"><span class="lab">문제</span> 데이터에서 어떻게 <b>의미 있는 패턴</b>을 뽑아낼까?</p>
-      <p class="jp sol"><span class="lab">해결</span> 머신러닝·통계·EDA로 데이터 분석에 입문<br>— 여러 도메인 데이터를 다루며 기초 체력을 쌓음.</p>
-      <div class="jtags">machine-learning · mini-project · ML/DL 기초</div>
-    </div>
-  </div>
-
-  <div class="jnode reveal">
-    <div class="jcard">
-      <div class="jyear">2023 – 2024</div>
-      <div class="jhead">강화학습 — 트레이딩에 빠지다</div>
-      <p class="jp prob"><span class="lab">문제</span> 지도학습은 <b>단발 예측</b>일 뿐<br>— 사고·팔고·보유의 순차적 의사결정을 담지 못한다.</p>
-      <p class="jp sol"><span class="lab">해결</span> 여기서부터 트레이딩에 본격적으로 빠짐.<br><b>확률적(stochastic) 환경에서의 베팅·최적화 그 자체가 즐거웠던 게 계기</b>.<br>매매를 <b>순차 의사결정 문제</b>로 보고 RL로 접근<br>— 커스텀 차트 환경·스캘핑 에이전트, 연구실에서 조합최적화 RL(TSP·VRP).</p>
-      <div class="jtags">Reinforce-Learning · crypto-scalping-RL · Gym-Trading-Env · KHU AIMS LAB</div>
-    </div>
-  </div>
-
-  <div class="jnode reveal">
-    <div class="jcard">
-      <div class="jyear">2024</div>
-      <div class="jhead">마켓 마이크로구조 · HFT</div>
-      <p class="jp prob"><span class="lab">문제</span> RL 백테스트가 실제 <b>체결·호가창 동역학</b>을 무시<br>→ 시뮬과 실거래의 괴리.</p>
-      <p class="jp sol"><span class="lab">해결</span> 오더북을 직접 모델링<br>— LOB 딥러닝, online estimation, 고빈도 리서치.<br>Jane Street(Kaggle Bronze 🥉).</p>
-      <p class="jp now"><span class="lab">+Rust</span> 이 무렵 <b>Rust에 입문</b><br>— 『The Rust Programming Language』를 소유권·스마트 포인터까지 완독.<br>훗날 OMS Rust 재작성의 씨앗.</p>
-      <div class="jtags">lob-deep-learning · deepOBs · online_estimation · ML-HFT · Hello-RUST-World</div>
-    </div>
-  </div>
-
-  <div class="jnode reveal">
-    <div class="jcard">
-      <div class="jyear">2025</div>
-      <div class="jhead">Julia 알파 리서치</div>
-      <p class="jp prob"><span class="lab">문제</span> Python은 연구는 빠르지만 <b>대규모 백테스트·실시간 연산이 느리다.</b></p>
-      <p class="jp sol"><span class="lab">해결</span> Julia로 알파 리서치·백테스트 파이프라인 구축.<br><code>@view</code>·<code>@inbounds</code>·pre-alloc로 GC 최소화, 멀티스레딩 병렬화.</p>
-      <div class="jtags">amuredo-EDA · amuredo-alphago · amuredo-StrategyStore</div>
-    </div>
-  </div>
-
-  <div class="jnode reveal">
-    <div class="jcard">
-      <div class="jyear">2025</div>
-      <div class="jhead">Julia OMS — 온몸 비틀기 최적화</div>
-      <p class="jp prob"><span class="lab">문제</span> 리서치를 실거래로. GC가 있는 Julia로 <b>마이크로초 핫패스</b>를 버틸 수 있나?</p>
-      <p class="jp sol"><span class="lab">해결</span> Julia로 OMS를 직접 구현하고 성능을 <b>극한까지 짜냄</b>:</p>
-      <ul style="list-style:none">
-        <li class="jopt"><b>핫패스 전용 자료구조 직접 설계</b> — <code>DoubleBuffer</code>·<code>IdxSet</code>(dirty index)·<code>EfficientDict</code>·<code>MultipleBuffering</code> 링버퍼·hot-connection 풀(<code>OnePool</code>)</li>
-        <li class="jopt"><b>lock 경합 최소화</b> — <code>Channel</code> producer/consumer로 피처 생산↔소비 분리, 단일 상태는 <code>Atomic</code>으로 락 자체를 제거</li>
-        <li class="jopt"><b>Pricing 더블버퍼</b> — 쓰기는 back buffer, 읽기는 <code>Atomic</code> active-index 스냅샷이라 전략은 <b>락 없이 read</b>. <code>reconcile_dirty!</code>가 <b>바뀐 인덱스만</b> 복사</li>
-        <li class="jopt"><code>@view</code> zero-copy 슬라이싱 · <code>@inbounds</code> 경계검사 제거</li>
-        <li class="jopt">pre-allocation + in-place(<code>!</code>) 버퍼 재사용 → <b>heap allocation 극한 감소</b></li>
-        <li class="jopt">type stability(<code>@code_warntype</code>), 핫루프 박싱·동적 디스패치 제거</li>
-        <li class="jopt"><code>Threads.@threads</code>·<code>@spawn</code> 병렬 연산 파이프라인</li>
-        <li class="jopt">Julia 패키지·성능 한계는 <code>ccall</code> <b>Rust DLL</b>로 우회 (하이브리드)</li>
-      </ul>
-      <div class="jtags">Julia OMS · DoubleBuffer dirty-index · ccall FFI · Rust DLL hotpath</div>
-    </div>
-  </div>
-
-  <div class="jnode cur reveal">
-    <div class="jcard">
-      <div class="jyear">2026 · 현재</div>
-      <div class="jhead">순수 Rust OMS 🦀</div>
-      <p class="jp prob"><span class="lab">문제</span> 온몸을 비틀어도 FFI 경계 오버헤드 + Julia <b>GC 압박</b>이 레이턴시·안정성의 병목.</p>
-      <p class="jp sol"><span class="lab">해결</span> OMS 전면을 <b>순수 Rust로 마이그레이션</b>.<br>zero-alloc 상태머신, 11개 거래소 통합<br>→ <b>tick-to-trade p50 4.23µs · 218K tps</b> <span style="color:var(--dim)">(네트워크 제외, 내부 처리 기준)</span>.</p>
-      <p class="jp now"><span class="lab">진행중</span> <b>2026년 1월</b>부터 Claude Code(AI 에이전트)로 개발 가속<br>— 현재도 활발히 진행 중.</p>
-      <div class="jtags">amuredo-OMS-v2 (Rust) · 102 commits / 2026</div>
-    </div>
-  </div>
-
-</div>
-
 <h2 id="projects">🗂️ Projects</h2>
 
 <div class="projects">
@@ -348,6 +268,86 @@
       <span class="metric">8-step deploy gate</span>
     </div>
   </article>
+
+</div>
+
+<h2 id="journey">🧭 The Journey</h2>
+
+데이터 분석으로 출발해 **강화학습에서 트레이딩에 빠진** 뒤, 매 단계마다 한계에 부딪히고 그걸 풀려고 다음 도구로 옮겨간 궤적입니다.<br>예측 → 의사결정 → 실행, Python → Julia → Rust.
+
+<div class="journey">
+
+  <div class="jnode reveal">
+    <div class="jcard">
+      <div class="jyear">2022 – 2023</div>
+      <div class="jhead">AI · 데이터 분석</div>
+      <p class="jp prob"><span class="lab">문제</span> 데이터에서 어떻게 <b>의미 있는 패턴</b>을 뽑아낼까?</p>
+      <p class="jp sol"><span class="lab">해결</span> 머신러닝·통계·EDA로 데이터 분석에 입문<br>— 여러 도메인 데이터를 다루며 기초 체력을 쌓음.</p>
+      <div class="jtags">machine-learning · mini-project · ML/DL 기초</div>
+    </div>
+  </div>
+
+  <div class="jnode reveal">
+    <div class="jcard">
+      <div class="jyear">2023 – 2024</div>
+      <div class="jhead">강화학습 — 트레이딩에 빠지다</div>
+      <p class="jp prob"><span class="lab">문제</span> 지도학습은 <b>단발 예측</b>일 뿐<br>— 사고·팔고·보유의 순차적 의사결정을 담지 못한다.</p>
+      <p class="jp sol"><span class="lab">해결</span> 여기서부터 트레이딩에 본격적으로 빠짐.<br><b>확률적(stochastic) 환경에서의 베팅·최적화 그 자체가 즐거웠던 게 계기</b>.<br>매매를 <b>순차 의사결정 문제</b>로 보고 RL로 접근<br>— 커스텀 차트 환경·스캘핑 에이전트, 연구실에서 조합최적화 RL(TSP·VRP).</p>
+      <div class="jtags">Reinforce-Learning · crypto-scalping-RL · Gym-Trading-Env · KHU AIMS LAB</div>
+    </div>
+  </div>
+
+  <div class="jnode reveal">
+    <div class="jcard">
+      <div class="jyear">2024</div>
+      <div class="jhead">마켓 마이크로구조 · HFT</div>
+      <p class="jp prob"><span class="lab">문제</span> RL 백테스트가 실제 <b>체결·호가창 동역학</b>을 무시<br>→ 시뮬과 실거래의 괴리.</p>
+      <p class="jp sol"><span class="lab">해결</span> 오더북을 직접 모델링<br>— LOB 딥러닝, online estimation, 고빈도 리서치.<br>Jane Street(Kaggle Bronze 🥉).</p>
+      <p class="jp now"><span class="lab">+Rust</span> 이 무렵 <b>Rust에 입문</b><br>— 『The Rust Programming Language』를 소유권·스마트 포인터까지 완독.<br>훗날 OMS Rust 재작성의 씨앗.</p>
+      <div class="jtags">lob-deep-learning · deepOBs · online_estimation · ML-HFT · Hello-RUST-World</div>
+    </div>
+  </div>
+
+  <div class="jnode reveal">
+    <div class="jcard">
+      <div class="jyear">2025</div>
+      <div class="jhead">Julia 알파 리서치</div>
+      <p class="jp prob"><span class="lab">문제</span> Python은 연구는 빠르지만 <b>대규모 백테스트·실시간 연산이 느리다.</b></p>
+      <p class="jp sol"><span class="lab">해결</span> Julia로 알파 리서치·백테스트 파이프라인 구축.<br><code>@view</code>·<code>@inbounds</code>·pre-alloc로 GC 최소화, 멀티스레딩 병렬화.</p>
+      <div class="jtags">amuredo-EDA · amuredo-alphago · amuredo-StrategyStore</div>
+    </div>
+  </div>
+
+  <div class="jnode reveal">
+    <div class="jcard">
+      <div class="jyear">2025</div>
+      <div class="jhead">Julia OMS — 온몸 비틀기 최적화</div>
+      <p class="jp prob"><span class="lab">문제</span> 리서치를 실거래로. GC가 있는 Julia로 <b>마이크로초 핫패스</b>를 버틸 수 있나?</p>
+      <p class="jp sol"><span class="lab">해결</span> Julia로 OMS를 직접 구현하고 성능을 <b>극한까지 짜냄</b>:</p>
+      <ul style="list-style:none">
+        <li class="jopt"><b>핫패스 전용 자료구조 직접 설계</b> — <code>DoubleBuffer</code>·<code>IdxSet</code>(dirty index)·<code>EfficientDict</code>·<code>MultipleBuffering</code> 링버퍼·hot-connection 풀(<code>OnePool</code>)</li>
+        <li class="jopt"><b>lock 경합 최소화</b> — <code>Channel</code> producer/consumer로 피처 생산↔소비 분리, 단일 상태는 <code>Atomic</code>으로 락 자체를 제거</li>
+        <li class="jopt"><b>Pricing 더블버퍼</b> — 쓰기는 back buffer, 읽기는 <code>Atomic</code> active-index 스냅샷이라 전략은 <b>락 없이 read</b>. <code>reconcile_dirty!</code>가 <b>바뀐 인덱스만</b> 복사</li>
+        <li class="jopt"><code>@view</code> zero-copy 슬라이싱 · <code>@inbounds</code> 경계검사 제거</li>
+        <li class="jopt">pre-allocation + in-place(<code>!</code>) 버퍼 재사용 → <b>heap allocation 극한 감소</b></li>
+        <li class="jopt">type stability(<code>@code_warntype</code>), 핫루프 박싱·동적 디스패치 제거</li>
+        <li class="jopt"><code>Threads.@threads</code>·<code>@spawn</code> 병렬 연산 파이프라인</li>
+        <li class="jopt">Julia 패키지·성능 한계는 <code>ccall</code> <b>Rust DLL</b>로 우회 (하이브리드)</li>
+      </ul>
+      <div class="jtags">Julia OMS · DoubleBuffer dirty-index · ccall FFI · Rust DLL hotpath</div>
+    </div>
+  </div>
+
+  <div class="jnode cur reveal">
+    <div class="jcard">
+      <div class="jyear">2026 · 현재</div>
+      <div class="jhead">순수 Rust OMS 🦀</div>
+      <p class="jp prob"><span class="lab">문제</span> 온몸을 비틀어도 FFI 경계 오버헤드 + Julia <b>GC 압박</b>이 레이턴시·안정성의 병목.</p>
+      <p class="jp sol"><span class="lab">해결</span> OMS 전면을 <b>순수 Rust로 마이그레이션</b>.<br>zero-alloc 상태머신, 11개 거래소 통합<br>→ <b>tick-to-trade p50 4.23µs · 218K tps</b> <span style="color:var(--dim)">(네트워크 제외, 내부 처리 기준)</span>.</p>
+      <p class="jp now"><span class="lab">진행중</span> <b>2026년 1월</b>부터 Claude Code(AI 에이전트)로 개발 가속<br>— 현재도 활발히 진행 중.</p>
+      <div class="jtags">amuredo-OMS-v2 (Rust) · 102 commits / 2026</div>
+    </div>
+  </div>
 
 </div>
 
