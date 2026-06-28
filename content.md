@@ -104,6 +104,27 @@
   </article>
 
   <article class="proj reveal">
+    <div class="proj-meta"><span class="yr">2026</span> · Rust · Julia <span class="badge priv">Private</span></div>
+    <div class="proj-title">Forward Test Harness · SimExchange</div>
+    <p class="proj-desc">
+      백테스트에서 좋던 전략이 실거래로 갈수록 무너지는 걸 잡기 위한 <b>가상거래소(SimExchange) 기반 포워드 테스트 하니스</b>.<br>
+      backtest=MockExchange / forward=<b>SimExchange(라이브 피드)</b> / live <b>3단계가 같은 전략 바이너리</b>를 실행해, 어디서 새는지 같은 코드로 추적합니다.
+    </p>
+    <div class="metrics">
+      <span class="metric g">Rust↔Julia Pearson 1.000000</span>
+      <span class="metric">3-stage · same binary</span>
+      <span class="metric">8-step deploy gate</span>
+    </div>
+    <div class="sub">가상거래소(SimExchange) 모델링</div>
+    <p class="proj-desc" style="margin-top:0"><b>큐 포지션</b> 추적 fill 모델 사다리(EndOfQueue→QueueBased) — 내 호가 앞 물량이 빠진 만큼만 체결.<br><b>레이턴시(주문 왕복·피드 지연)</b>를 주입해 의사결정-체결 시차를 재현.<br>시간 주입(<code>ctx.now_ms()</code>)으로 <b>결정론</b> 보장.</p>
+    <div class="sub">정합성 검증</div>
+    <p class="proj-desc" style="margin-top:0"><b>same-window 규칙</b> + yhat 분포 parity(<code>σ ratio∈[0.85,1.15]</code>, same-second <code>ρ≥0.85</code>) + <code>feat_hash</code> byte 일치.<br>Rust↔Julia 예측 <b>Pearson 1.000000</b>(max diff 7e-9) 달성.</p>
+    <div class="sub">정직한 기록</div>
+    <p class="proj-desc" style="margin-top:0">백테스트 +18.8bp vs 같은 구간 실거래 −29¢(~5bp 낙관 갭)를 큐 포지션 잔차로 보고 그대로 기록.<br>→ "Sim PnL 숫자 자체는 믿지 말고 same-window로만 비교", 배포 전 <b>8단계 체크리스트</b> 통과 규약.</p>
+    <div class="stack"><span class="t">Rust</span><span class="t">Julia</span><span class="t">SimExchange</span></div>
+  </article>
+
+  <article class="proj reveal">
     <div class="proj-meta"><span class="yr">2026</span> · Julia · Python <span class="badge priv">Private</span></div>
     <div class="proj-title">amuredo-alphafactor</div>
     <p class="proj-desc">
@@ -186,7 +207,7 @@
 
 <h2 id="engineering">🛠️ Engineering &amp; Troubleshooting</h2>
 
-<p class="ts-intro"><b>amuredo-OMS</b>(Julia+Rust)와 <b>amuredo-OMS-v2</b>(순수 Rust)를 만들며 부딪힌 실전 엔지니어링 고민과 해결의 기록 — 데이터 수집부터 실거래 정합성까지 7개 단계. <span style="color:var(--dim)">알파·시그널 내용은 제외, 시스템 설계와 트러블슈팅만.</span></p>
+<p class="ts-intro"><b>amuredo-OMS</b>(Julia+Rust)와 <b>amuredo-OMS-v2</b>(순수 Rust)를 만들며 부딪힌 실전 엔지니어링 고민과 해결의 기록 — 데이터 수집부터 주문 실행까지 6개 단계. <span style="color:var(--dim)">알파·시그널 내용은 제외, 시스템 설계와 트러블슈팅만. (포워드 테스트 가상거래소는 별도 카드로 분리)</span></p>
 
 <div class="ts-list">
 
@@ -254,18 +275,6 @@
       <span class="metric">early-fill replay buf 64</span>
       <span class="metric">missed-fill grace 2000ms</span>
       <span class="metric g">trade_id dedup</span>
-    </div>
-  </article>
-
-  <article class="ts reveal">
-    <div class="ts-h"><span class="n">07</span><span class="tt">백테스트 → 포워드 → 실거래 정합성</span><span class="en">backtest · sim · live parity ⭐</span></div>
-    <p class="jp prob"><span class="lab">문제</span> 백테스트에서 좋던 전략이 <b>가상거래소 포워드 → 실거래</b>로 갈수록 무너진다.<br>어디서 새는지 어떻게 잡나?</p>
-    <p class="jp sol"><span class="lab">해결</span> 3단계가 <b>같은 전략 바이너리</b>를 실행 — backtest=MockExchange / forward=<b>SimExchange</b>(라이브 피드) / live.<br>핵심은 <b>가상거래소(SimExchange)를 실제에 가깝게</b> 만든 것:<br>· <b>큐 포지션(queue position)</b>을 추적하는 fill 모델 사다리(EndOfQueue→QueueBased)로 내 호가 앞 물량이 빠진 만큼만 체결,<br>· <b>레이턴시(주문 왕복·피드 지연)</b>를 주입해 의사결정-체결 사이 시차를 재현,<br>· 시간 주입(<code>ctx.now_ms()</code>)으로 <b>결정론</b> 보장.<br>정합성은 <b>same-window 규칙</b> + yhat 분포 parity(<code>σ ratio∈[0.85,1.15]</code>, same-second <code>ρ≥0.85</code>) + <code>feat_hash</code> byte 일치로 검증.</p>
-    <p class="jp res"><span class="lab">결과</span> Rust↔Julia 예측 <b>Pearson 1.000000</b>(max diff 7e-9) 달성.<br>그래도 백테스트 +18.8bp vs 같은 구간 실거래 −29¢(~5bp 낙관 갭)는<br>큐 포지션을 완벽히 맞추지 못한 잔차로 보고 <b>정직하게 기록</b>.<br>→ "Sim PnL 숫자 자체는 믿지 말고 same-window로만 비교", 배포 전 <b>8단계 체크리스트</b> 통과 규약.</p>
-    <div class="metrics">
-      <span class="metric g">Rust↔Julia Pearson 1.000000</span>
-      <span class="metric">3-stage, same binary</span>
-      <span class="metric">8-step deploy gate</span>
     </div>
   </article>
 
