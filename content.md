@@ -95,6 +95,9 @@
       <p class="jp prob"><span class="lab">문제</span> 리서치를 실거래로. GC가 있는 Julia로 <b>마이크로초 핫패스</b>를 버틸 수 있나?</p>
       <p class="jp sol"><span class="lab">해결</span> Julia로 OMS를 직접 구현하고 성능을 <b>극한까지 짜냄</b>:</p>
       <ul style="list-style:none">
+        <li class="jopt"><b>커스텀 자료구조 다수 직접 설계</b> — object pool · ring buffer · 컬럼 스토어 등 핫패스 전용</li>
+        <li class="jopt"><b>lock 경합 최소화</b>에 집중 — 공유 상태를 줄이고 lock-free/단일 소유권 구조로 설계</li>
+        <li class="jopt">Pricing은 <b>dirty-index</b>만 복사하는 더블버퍼로 피처 공급 → 락 없이 sim↔live 정합</li>
         <li class="jopt"><code>@view</code> zero-copy 슬라이싱 · <code>@inbounds</code> 경계검사 제거</li>
         <li class="jopt">pre-allocation + in-place(<code>!</code>) 버퍼 재사용 → <b>heap allocation 극한 감소</b></li>
         <li class="jopt">type stability(<code>@code_warntype</code>), 핫루프 박싱·동적 디스패치 제거</li>
