@@ -62,7 +62,7 @@
       <div class="jyear">2023 – 2024</div>
       <div class="jhead">강화학습 — 트레이딩에 빠지다</div>
       <p class="jp prob"><span class="lab">문제</span> 지도학습은 <b>단발 예측</b>일 뿐 — 사고·팔고·보유의 순차적 의사결정을 담지 못한다.</p>
-      <p class="jp sol"><span class="lab">해결</span> 여기서부터 트레이딩에 본격적으로 빠짐. 매매를 <b>순차 의사결정 문제</b>로 보고 RL로 접근 — 커스텀 차트 환경·스캘핑 에이전트, 연구실에서 조합최적화 RL(TSP·VRP).</p>
+      <p class="jp sol"><span class="lab">해결</span> 여기서부터 트레이딩에 본격적으로 빠짐. <b>확률적(stochastic) 환경에서의 베팅·최적화 그 자체가 즐거웠던 게 계기</b>. 매매를 <b>순차 의사결정 문제</b>로 보고 RL로 접근 — 커스텀 차트 환경·스캘핑 에이전트, 연구실에서 조합최적화 RL(TSP·VRP).</p>
       <div class="jtags">Reinforce-Learning · crypto-scalping-RL · Gym-Trading-Env · KHU AIMS LAB</div>
     </div>
   </div>
