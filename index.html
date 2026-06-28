@@ -209,7 +209,10 @@ footer{border-top:1px solid var(--border);margin-top:30px;padding:22px 0;text-al
 <main id="content" class="wrap"><p class="loading">불러오는 중…</p></main>
 
 <footer>
-  <div class="wrap">© 2026 Donghui Lim · 임동휘 &nbsp;·&nbsp; lukedonghui@gmail.com</div>
+  <div class="wrap">
+    © 2026 Donghui Lim · 임동휘 &nbsp;·&nbsp; lukedonghui@gmail.com<br>
+    <span id="lastmod" class="lastmod"></span><a href="https://github.com/donghui-0126/donghui-0126.github.io/commits/main" target="_blank" rel="noopener">commit history ↗</a>
+  </div>
 </footer>
 
 <!-- content is authored in content.md and rendered at runtime (no build step) -->
@@ -223,6 +226,18 @@ footer{border-top:1px solid var(--border);margin-top:30px;padding:22px 0;text-al
     const md=await res.text();
     marked.setOptions({gfm:true,breaks:false});
     el.innerHTML=marked.parse(md);
+    // "Last updated" from content.md's Last-Modified header (no build step, no extra request)
+    try{
+      const lm=res.headers.get('last-modified');
+      const lmEl=document.getElementById('lastmod');
+      if(lm&&lmEl){
+        const d=new Date(lm);
+        if(!isNaN(d)){
+          const f=d.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
+          lmEl.textContent='Last updated: '+f+'  ·  ';
+        }
+      }
+    }catch(_){/* ignore */}
   }catch(e){
     el.innerHTML='<p style="color:var(--red);font-family:var(--mono);font-size:13px;padding:30px 0">'
       +'콘텐츠를 불러오지 못했습니다: '+e.message+'</p>';
