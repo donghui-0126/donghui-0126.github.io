@@ -67,10 +67,10 @@
       <div class="bd"><h5><span class="n">03</span>ML Market Making</h5><ul>
         <li>ML 미시구조 시그널 → maker 호가</li>
         <li>cross-symbol·cross-exchange 리서치</li></ul></div>
-      <div class="bd"><h5><span class="n">05</span>OrderManagement</h5><ul>
+      <div class="bd"><h5><span class="n">04</span>OrderManagement</h5><ul>
         <li>FSM기반 안정적인 주문 관리</li>
         <li>missed fill 감지, REST 검증 폴백</li></ul></div>
-      <div class="bd"><h5><span class="n">06</span>VirtualExchange</h5><ul>
+      <div class="bd"><h5><span class="n">05</span>VirtualExchange</h5><ul>
         <li>Latency/Queue 고려가능한 가상 거래소 구현</li></ul></div>
     </div>
     <div class="stack"><span class="t">Rust (Infra)</span><span class="t">Julia (EDA)</span></div>
@@ -87,7 +87,7 @@
     <div class="sub">ML / 통계 분석</div>
     <p class="proj-desc" style="margin-top:0">Model 학습<br> Shap분석을 통한 모델 해석<br>tstat/HAC를 통한 p-value 해석</p>
     <div class="sub">Forward Test (실거래 검증)</div>
-    <p class="proj-desc" style="margin-top:0">BTC 낙주매매<br> 국내거래소 WLD pair-reversion<br>자체 제작 가상거래소는 queue position·latency까지 모델링해 괴리를 최소화<br>현재 ML 미시구조 시그널 기반 MM 전략을 실시간 forward test 중.</p>
+    <p class="proj-desc" style="margin-top:0">BTC 낙주매매<br> 국내거래소 WLD pair-reversion<br>현재 ML 미시구조 시그널 기반 MM 전략을 실시간 forward test 중.</p>
   </article>
 
   <article class="proj reveal">
@@ -97,11 +97,9 @@
       1s Backtest의 문제점을 해결하기 위한 가상거래소 기반 포워드 테스트.<br>
       backtest=1s Data기반 체결가정 / forward=VirtualExchange(라이브 피드) / live 3단계 검증
     </p>
-    <div class="metrics">
-    </div>
-    <div class="sub">가상거래소(SimExchange) 모델링</div>
+    <div class="sub">가상거래소(VirtualExchange) 모델링</div>
     <p class="proj-desc" style="margin-top:0">큐 포지션 추적 fill 모델 사다리(EndOfQueue→QueueBased) — 내 호가 앞 물량이 빠진 만큼만 체결.<br>레이턴시(주문 왕복·피드 지연)를 주입해 의사결정-체결 시차를 재현.</p>
-    <div class="stack"><span class="t">Rust</span><span class="t">Julia</span><span class="t">SimExchange</span></div>
+    <div class="stack"><span class="t">Rust</span><span class="t">Julia</span><span class="t">VirtualExchange</span></div>
   </article>
 
   <article class="proj reveal">
@@ -121,9 +119,11 @@
     <div class="sub">거래량바(volume-bar) 엔진</div>
     <p class="proj-desc" style="margin-top:0">Volume Bar기반 리서치</p>
     <div class="sub">Pump-detect 전략</div>
+    <p class="proj-desc" style="margin-top:0">pump-fade + pump-end exit — 가격↓·OI↓(롤오버) 동반 시 조기청산.</p>
     <div class="sub">리서치 factor</div>
     <p class="proj-desc" style="margin-top:0">premium(basis·김프) · open interest · funding rate · return momentum · volume · vwap · price-OI momentum.</p>
     <div class="sub">Long-Short 라이브 테스트</div>
+    <p class="proj-desc" style="margin-top:0">크로스섹셔널 롱숏 4종을 바이낸스 선물에 실시간 forward 모니터링(view-only).</p>
     <div class="stack"><span class="t">Julia</span><span class="t">Python</span><span class="t">Claude Code (HITL)</span></div>
   </article>
 
@@ -174,7 +174,7 @@
 <div class="ts-list">
 
   <article class="ts reveal">
-    <div class="ts-h"><span class="n">02</span><span class="tt">피더 &amp; 피처 스토어</span><span class="en">feeder · FeatureStore</span></div>
+    <div class="ts-h"><span class="n">01</span><span class="tt">피더 &amp; 피처 스토어</span><span class="en">feeder · FeatureStore</span></div>
     <p class="jp prob"><span class="lab">문제</span> 초당 수만 메시지를 받아<br>수십~수백 피처를 GC·락 없이 실시간 계산하려면?</p>
     <p class="jp sol"><span class="lab">해결</span> 피더(WS producer) → MatchingEngine → Channel 경쟁 소비.<br>오브젝트 풀(<code>get_from_pool!</code>/<code>release_to_pool!</code>)·<code>StaticRingBuffer</code>로 heap 할당 0.<br>FeatureStore는 3계층(Online/Offline/Cross)이고, 피처가 다른 피처를 구독(<code>use_*_feature_name</code>)하는 의존성 DAG 구조라 새 피처를 선언만으로 쉽게 추가.<br>틱마다 갱신되는 실시간(Online) 피처와 1초 주기로 갱신되는(Offline) 피처를 분리해 연산 부하를 적절히 배분.<br><code>ColumnStore</code> row-major f64 zero-copy, EMA 윈도우(갭 시 0 감쇠), HeartBeat가 1초 끊긴 피드 감지.<br>프로덕션 FeatureStoreSession×4·FeedSession×4 병렬.</p>
     <div class="metrics">
@@ -186,7 +186,7 @@
   </article>
 
   <article class="ts reveal">
-    <div class="ts-h"><span class="n">03</span><span class="tt">모델 레이어</span><span class="en">PricingSession · DoubleBuffer</span></div>
+    <div class="ts-h"><span class="n">02</span><span class="tt">모델 레이어</span><span class="en">PricingSession · DoubleBuffer</span></div>
     <p class="jp prob"><span class="lab">문제</span> 한 전략이 수십~99개 피처를 읽고 여러 모델을 µs 단위로 추론해야 한다.</p>
     <p class="jp sol"><span class="lab">해결</span> PricingSession이 <code>DoubleBuffer</code>(dirty-index만 복사, lock-free)로 피처를 공급.<br> <code>ctx.feature()</code>·<code>ctx.model()</code>·<code>ctx.feature_for(uid,name)</code> 읽기 전용 API만.<br>한 전략에 여러 모델(<code>HashMap&lt;String,Model&gt;</code>)을 등록해 µs 단위로 추론.</p>
     <div class="metrics">
@@ -197,7 +197,7 @@
   </article>
 
   <article class="ts reveal">
-    <div class="ts-h"><span class="n">04</span><span class="tt">주문 제출</span><span class="en">order channel · state machine</span></div>
+    <div class="ts-h"><span class="n">03</span><span class="tt">주문 제출</span><span class="en">order channel · state machine</span></div>
     <p class="jp prob"><span class="lab">문제</span> 전략 결정 → 거래소 REST까지,<br>핫패스에서 할당 없이 주문 수명을 안전하게 관리하려면?</p>
     <p class="jp sol"><span class="lab">해결</span> 주문은 order Channel(Strategy→OMS)로 흘러 REST 워커가 제출.<br>상태머신(<code>PlaceCreated→PlaceInFlight→Placed→Partial/Filled</code>, <code>CancelInFlight→Canceled</code>, <code>MaybeMissed</code>)<br>— 정의되지 않은 전이는 identity로 중복 이벤트를 흡수.<br>local↔exchange ID 양방향 매핑, zero-alloc 오브젝트 풀</p>
     <div class="metrics">
@@ -208,7 +208,7 @@
   </article>
 
   <article class="ts reveal">
-    <div class="ts-h"><span class="n">05</span><span class="tt">주문 경합</span><span class="en">contention · validation</span></div>
+    <div class="ts-h"><span class="n">04</span><span class="tt">주문 경합</span><span class="en">contention · validation</span></div>
     <p class="jp prob"><span class="lab">문제</span> 취소가 체결과 동시에 날아오거나,<br>아직 ack 안 된 주문을 취소하거나, 같은 가격에 두 번 주문하면?</p>
     <p class="jp sol"><span class="lab">해결</span> 주문 제출 전 8가지 검증(<code>validation.rs</code>)<br>— cancel-while-canceling, SMP(자가체결 방지), duplicate-price, cancel-not-live, min qty/notional, NaN guard.<br><code>canceling_local_id_set</code>·<code>CancelInFlight</code>로 진행 중 취소를 추적하고,<br>stale-cancel sweep가 30s+ 멈춘 취소를 강제 종료해 지갑 예약금 잠김을 해제.<br>throttle·cancel-replace 케이던스(250ms·1Hz·10Hz).</p>
     <div class="metrics">
@@ -219,7 +219,7 @@
   </article>
 
   <article class="ts reveal">
-    <div class="ts-h"><span class="n">06</span><span class="tt">웹소켓 유저스트림</span><span class="en">user-stream · out-of-order · gap</span></div>
+    <div class="ts-h"><span class="n">05</span><span class="tt">웹소켓 유저스트림</span><span class="en">user-stream · out-of-order · gap</span></div>
     <p class="jp prob"><span class="lab">문제</span> 거래소 WS가 체결을 호가 등록보다 먼저 보내거나,<br>이벤트를 빠뜨리거나(gap), 같은 체결을 두 번 보내면?</p>
     <p class="jp sol"><span class="lab">해결</span> ① 순서 역전 — <code>pending_ws_buffer</code>(64)가 early-fill을 버퍼링했다가 REST 매핑이 생기면 순서대로 replay.<br>② 누락 — <code>MissedFillDetector</code>가 체결틱이 내 호가를 관통하면 grace 2000ms 대기 후 REST로 실체 확인.<br>③ 끊김 — listen-key <code>keep_alive_loop</code> + 2–5s 백오프 auto-reconnect.<br>④ 중복 — <code>processed_trade_id_set</code> trade_id dedup + 상태머신 중복 흡수.</p>
     <div class="metrics">
