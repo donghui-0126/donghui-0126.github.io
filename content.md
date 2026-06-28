@@ -178,56 +178,30 @@
     <div class="ts-h"><span class="n">01</span><span class="tt">피더 &amp; 피처 스토어</span><span class="en">feeder · FeatureStore</span></div>
     <p class="jp prob"><span class="lab">문제</span> 초당 수만 메시지를 받아<br>수십~수백 피처를 GC·락 없이 실시간 계산하려면?</p>
     <p class="jp sol"><span class="lab">해결</span> 피더(WS producer) → MatchingEngine → Channel 경쟁 소비.<br>오브젝트 풀(<code>get_from_pool!</code>/<code>release_to_pool!</code>)·<code>StaticRingBuffer</code>로 heap 할당 0.<br>FeatureStore는 3계층(Online/Offline/Cross)이고, 피처가 다른 피처를 구독(<code>use_*_feature_name</code>)하는 의존성 DAG 구조라 새 피처를 선언만으로 쉽게 추가.<br>틱마다 갱신되는 실시간(Online) 피처와 1초 주기로 갱신되는(Offline) 피처를 분리해 연산 부하를 적절히 배분.<br><code>ColumnStore</code> row-major f64 zero-copy, EMA 윈도우(갭 시 0 감쇠), HeartBeat가 1초 끊긴 피드 감지.<br>프로덕션 FeatureStoreSession×4·FeedSession×4 병렬.</p>
-    <div class="metrics">
-      <span class="metric g">DAG 피처 의존성</span>
-      <span class="metric">realtime ↔ 1s 분리</span>
-      <span class="metric">online 99 features</span>
-      <span class="metric g">GC-zero pool</span>
-    </div>
   </article>
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">02</span><span class="tt">모델 레이어</span><span class="en">PricingSession · DoubleBuffer</span></div>
     <p class="jp prob"><span class="lab">문제</span> 한 전략이 수십~99개 피처를 읽고 여러 모델을 µs 단위로 추론해야 한다.</p>
     <p class="jp sol"><span class="lab">해결</span> PricingSession이 <code>DoubleBuffer</code>(dirty-index만 복사, lock-free)로 피처를 공급.<br> <code>ctx.feature()</code>·<code>ctx.model()</code>·<code>ctx.feature_for(uid,name)</code> 읽기 전용 API만.<br>한 전략에 여러 모델(<code>HashMap&lt;String,Model&gt;</code>)을 등록해 µs 단위로 추론.<br>ML 모델도 추론 1회당 <b>100µs 미만</b>이라 <b>매 틱마다 반응</b>할 수 있다.</p>
-    <div class="metrics">
-      <span class="metric g">ML 추론 &lt;100µs/회</span>
-      <span class="metric g">매 틱 반응</span>
-      <span class="metric">read-only ctx API</span>
-    </div>
   </article>
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">03</span><span class="tt">주문 제출</span><span class="en">order channel · state machine</span></div>
     <p class="jp prob"><span class="lab">문제</span> 전략 결정 → 거래소 REST까지,<br>핫패스에서 할당 없이 주문 수명을 안전하게 관리하려면?</p>
     <p class="jp sol"><span class="lab">해결</span> 주문은 order Channel(Strategy→OMS)로 흘러 REST 워커가 제출.<br>상태머신(<code>PlaceCreated→PlaceInFlight→Placed→Partial/Filled</code>, <code>CancelInFlight→Canceled</code>, <code>MaybeMissed</code>)<br>— 정의되지 않은 전이는 identity로 중복 이벤트를 흡수.<br>local↔exchange ID 양방향 매핑, zero-alloc 오브젝트 풀</p>
-    <div class="metrics">
-      <span class="metric">FSM</span>
-      <span class="metric g">zero-alloc OrderInOMS Pool</span>
-      <span class="metric">local id↔exchange id map</span>
-    </div>
   </article>
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">04</span><span class="tt">주문 경합</span><span class="en">contention · validation</span></div>
     <p class="jp prob"><span class="lab">문제</span> 취소가 체결과 동시에 날아오거나,<br>아직 ack 안 된 주문을 취소하거나, 같은 가격에 두 번 주문하면?</p>
     <p class="jp sol"><span class="lab">해결</span> 주문 제출 전 8가지 검증(<code>validation.rs</code>)<br>— cancel-while-canceling, SMP(자가체결 방지), duplicate-price, cancel-not-live, min qty/notional, NaN guard.<br><code>canceling_local_id_set</code>·<code>CancelInFlight</code>로 진행 중 취소를 추적하고,<br>stale-cancel sweep가 30s+ 멈춘 취소를 강제 종료해 지갑 예약금 잠김을 해제.<br>throttle·cancel-replace 케이던스(250ms·1Hz·10Hz).</p>
-    <div class="metrics">
-      <span class="metric">8 validation checks</span>
-      <span class="metric">SMP · dup-price guard</span>
-      <span class="metric g">stale-cancel sweep</span>
-    </div>
   </article>
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">05</span><span class="tt">웹소켓 유저스트림</span><span class="en">user-stream · out-of-order · gap</span></div>
     <p class="jp prob"><span class="lab">문제</span> 거래소 WS가 체결을 호가 등록보다 먼저 보내거나,<br>이벤트를 빠뜨리거나(gap), 같은 체결을 두 번 보내면?</p>
     <p class="jp sol"><span class="lab">해결</span> ① 순서 역전 — <code>pending_ws_buffer</code>(64)가 early-fill을 버퍼링했다가 REST 매핑이 생기면 순서대로 replay.<br>② 누락 — <code>MissedFillDetector</code>가 체결틱이 내 호가를 관통하면 grace 2000ms 대기 후 REST로 실체 확인.<br>③ 끊김 — listen-key <code>keep_alive_loop</code> + 2–5s 백오프 auto-reconnect.<br>④ 중복 — <code>processed_trade_id_set</code> trade_id dedup + 상태머신 중복 흡수.</p>
-    <div class="metrics">
-      <span class="metric">early-fill replay buf 64</span>
-      <span class="metric">missed-fill grace 2000ms</span>
-      <span class="metric g">trade_id dedup</span>
-    </div>
   </article>
 
 </div>
