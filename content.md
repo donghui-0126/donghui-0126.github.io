@@ -66,6 +66,7 @@
         <li>Matching Engine, Feature Store 기반 queue dynamic/cross symbol/cross exchange 피처 생성</li></ul></div>
       <div class="bd"><h5><span class="n">03</span>ML Market Making</h5><ul>
         <li>ML 미시구조 시그널 → maker 호가</li>
+        <li>추론 1회 &lt;100µs → 매 틱(tick) 반응</li>
         <li>cross-symbol·cross-exchange 리서치</li></ul></div>
       <div class="bd"><h5><span class="n">04</span>OrderManagement</h5><ul>
         <li>FSM기반 안정적인 주문 관리</li>
@@ -188,10 +189,10 @@
   <article class="ts reveal">
     <div class="ts-h"><span class="n">02</span><span class="tt">모델 레이어</span><span class="en">PricingSession · DoubleBuffer</span></div>
     <p class="jp prob"><span class="lab">문제</span> 한 전략이 수십~99개 피처를 읽고 여러 모델을 µs 단위로 추론해야 한다.</p>
-    <p class="jp sol"><span class="lab">해결</span> PricingSession이 <code>DoubleBuffer</code>(dirty-index만 복사, lock-free)로 피처를 공급.<br> <code>ctx.feature()</code>·<code>ctx.model()</code>·<code>ctx.feature_for(uid,name)</code> 읽기 전용 API만.<br>한 전략에 여러 모델(<code>HashMap&lt;String,Model&gt;</code>)을 등록해 µs 단위로 추론.</p>
+    <p class="jp sol"><span class="lab">해결</span> PricingSession이 <code>DoubleBuffer</code>(dirty-index만 복사, lock-free)로 피처를 공급.<br> <code>ctx.feature()</code>·<code>ctx.model()</code>·<code>ctx.feature_for(uid,name)</code> 읽기 전용 API만.<br>한 전략에 여러 모델(<code>HashMap&lt;String,Model&gt;</code>)을 등록해 µs 단위로 추론.<br>ML 모델도 추론 1회당 <b>100µs 미만</b>이라 <b>매 틱마다 반응</b>할 수 있다.</p>
     <div class="metrics">
-      <span class="metric g">5 models feed→order p50 5.8µs</span>
-      <span class="metric g">10 models 7–11µs</span>
+      <span class="metric g">ML 추론 &lt;100µs/회</span>
+      <span class="metric g">매 틱 반응</span>
       <span class="metric">read-only ctx API</span>
     </div>
   </article>
