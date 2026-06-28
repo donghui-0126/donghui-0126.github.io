@@ -80,7 +80,7 @@
     <div class="proj-meta"><span class="yr">2026</span> · Quant Research</div>
     <div class="proj-title">Quant Research &amp; Forward Tests</div>
     <p class="proj-desc">
-      data analysis->smoked backtest->forwardtest 워크플로우 구축.
+      data analysis->1s backtest->forwardtest 워크플로우 구축.
     </p>
     <div class="sub">Market Microstructure</div>
     <p class="proj-desc" style="margin-top:0">오더북 큐 마이크로구조 리서치 + 분석<br>머신러닝기반 시그널로 메이커 호가 제출<br>cross-symbol · cross-exchange 시그널 리서치</p>
@@ -94,8 +94,8 @@
     <div class="proj-meta"><span class="yr">2026</span> · Rust · Julia <span class="badge priv">Private</span></div>
     <div class="proj-title">Forward Test · VirtualExchange</div>
     <p class="proj-desc">
-      Smoked Backtest의 문제점을 해결하기 위한 가상거래소 기반 포워드 테스트.<br>
-      backtest=Smoked Data기반 체결가정 / forward=VirtualExchange(라이브 피드) / live 3단계 검증
+      1s Backtest의 문제점을 해결하기 위한 가상거래소 기반 포워드 테스트.<br>
+      backtest=1s Data기반 체결가정 / forward=VirtualExchange(라이브 피드) / live 3단계 검증
     </p>
     <div class="metrics">
     </div>
@@ -188,7 +188,7 @@
   <article class="ts reveal">
     <div class="ts-h"><span class="n">03</span><span class="tt">모델 레이어</span><span class="en">PricingSession · DoubleBuffer</span></div>
     <p class="jp prob"><span class="lab">문제</span> 한 전략이 수십~99개 피처를 읽고 여러 모델을 µs 단위로 추론해야 한다.</p>
-    <p class="jp sol"><span class="lab">해결</span> PricingSession이 <code>DoubleBuffer</code>(dirty-index만 복사, lock-free)로 피처를 공급.<br> <code>ctx.feature()</code>·<code>ctx.model()</code>·<code>ctx.feature_for(uid,name)</code> 읽기 전용 API만.<br>한 전략에 여러 모델(<code>HashMap&lt;String,Model&gt;</code>)을 등록해 µs 단위로 병렬 추론.</p>
+    <p class="jp sol"><span class="lab">해결</span> PricingSession이 <code>DoubleBuffer</code>(dirty-index만 복사, lock-free)로 피처를 공급.<br> <code>ctx.feature()</code>·<code>ctx.model()</code>·<code>ctx.feature_for(uid,name)</code> 읽기 전용 API만.<br>한 전략에 여러 모델(<code>HashMap&lt;String,Model&gt;</code>)을 등록해 µs 단위로 추론.</p>
     <div class="metrics">
       <span class="metric g">5 models feed→order p50 5.8µs</span>
       <span class="metric g">10 models 7–11µs</span>
@@ -201,7 +201,7 @@
     <p class="jp prob"><span class="lab">문제</span> 전략 결정 → 거래소 REST까지,<br>핫패스에서 할당 없이 주문 수명을 안전하게 관리하려면?</p>
     <p class="jp sol"><span class="lab">해결</span> 주문은 order Channel(Strategy→OMS)로 흘러 REST 워커가 제출.<br>상태머신(<code>PlaceCreated→PlaceInFlight→Placed→Partial/Filled</code>, <code>CancelInFlight→Canceled</code>, <code>MaybeMissed</code>)<br>— 정의되지 않은 전이는 identity로 중복 이벤트를 흡수.<br>local↔exchange ID 양방향 매핑, zero-alloc 오브젝트 풀</p>
     <div class="metrics">
-      <span class="metric">11-state FSM</span>
+      <span class="metric">FSM</span>
       <span class="metric g">zero-alloc OrderInOMS Pool</span>
       <span class="metric">local id↔exchange id map</span>
     </div>
@@ -303,7 +303,7 @@
       <div class="jyear">2026 · 현재</div>
       <div class="jhead">순수 Rust OMS 🦀</div>
       <p class="jp prob"><span class="lab">문제</span> 온몸을 비틀어도 FFI 경계 오버헤드 + Julia GC 압박이 레이턴시·안정성의 병목.</p>
-      <p class="jp sol"><span class="lab">해결</span> OMS 전면을 순수 Rust로 마이그레이션.<br>zero-alloc 상태머신, 11개 거래소 통합<br>→ tick-to-trade p50 4.23µs · 218K tps <span style="color:var(--dim)">(네트워크 제외, 내부 처리 기준)</span>.</p>
+      <p class="jp sol"><span class="lab">해결</span> OMS 전면을 순수 Rust로 마이그레이션.<br>zero-alloc 상태머신, 5개 거래소 통합<br>→ tick-to-trade p50 4.23µs <span style="color:var(--dim)">(네트워크 제외, 내부 처리 기준, 모델 제외)</span>.</p>
       <p class="jp now"><span class="lab">진행중</span> 2026년 1월부터 Claude Code(AI 에이전트)로 개발 가속<br>— 현재도 활발히 진행 중.</p>
       <div class="jtags">amuredo-OMS-v2 (Rust) · 102 commits / 2026</div>
     </div>
