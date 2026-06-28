@@ -129,8 +129,8 @@
     <div class="proj-meta"><span class="yr">2025 – 2026</span> · Rust <span class="badge feat">★ Featured</span><span class="badge priv">Private</span></div>
     <div class="proj-title">amuredo-OMS-v2</div>
     <p class="proj-desc">
-      순수 <b>Rust</b>로 마이그레이션한 멀티 거래소 주문관리시스템(OMS).
-      <b>Feeder → MatchingEngine → FeatureStore → Pricing → Strategy → OMS</b>로 이어지는 파이프라인을
+      순수 <b>Rust</b>로 마이그레이션한 멀티 거래소 주문관리시스템(OMS). OMS 자체가
+      <b>Feeder → MatchingEngine → FeatureStore → Pricing → Strategy</b> 단계로 구성된 파이프라인으로,
       실시간 데이터 수집부터 주문 실행까지 수직 통합했고, <b>2026년 102개 커밋</b>에 걸쳐 직접 설계·구현했습니다.
     </p>
     <div class="metrics">
@@ -143,7 +143,7 @@
     <div class="bd-grid">
       <div class="bd"><h5><span class="n">01</span>Engine &amp; Pipeline</h5><ul>
         <li>Julia+Rust DLL → <b>순수 Rust 마이그레이션</b></li>
-        <li>Feeder→MatchingEngine→FeatureStore→Pricing→Strategy→OMS</li>
+        <li>OMS = Feeder→MatchingEngine→FeatureStore→Pricing→Strategy</li>
         <li>zero-alloc 상태머신, <code>DoubleBuffer</code> lock-free</li></ul></div>
       <div class="bd"><h5><span class="n">02</span>Multi-exchange Data</h5><ul>
         <li>11거래소 인증(<code>JWT</code>·<code>HMAC</code>)</li>
