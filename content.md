@@ -223,22 +223,26 @@
   </article>
 
   <article class="proj reveal">
-    <div class="proj-meta"><span class="yr">2026</span> · Julia · Rust · LLM <span class="badge priv">Private</span></div>
+    <div class="proj-meta"><span class="yr">2026</span> · Julia · Python <span class="badge priv">Private</span></div>
     <div class="proj-title">amuredo-alphafactor</div>
     <p class="proj-desc">
-      크립토 선물 <b>알파 리서치 플랫폼</b>. 가설(hypothesis) 하나를 넣으면 <b>RAG → LLM 가설 생성 → Julia 배치 실험 → 해석 → accept/decline 판결 → 지식그래프 저장</b>까지 7단계를 자동화.
-      Julia 서버가 <b>537개 코인 × 227K 바</b>를 들고 cross-sectional IC를 돌리고, 가설은 <b>amure-db 지식그래프</b>(subset/superset/reference 엣지·역방향 자동)로 축적합니다.
+      크립토 선물 <b>알파 리서치 플랫폼</b>. 현재 주력은 <b>Human-in-the-Loop</b> 모드 — 터미널에서 Claude와 대화하며
+      Julia 데이터 서버(<b>641 코인 × 227K 5분봉</b>)에 실험을 직접 던지고, <b>실험 설계 → Julia 스크립트 → 결과 해석</b> 루프를 빠르게 돕니다.
     </p>
     <div class="metrics">
-      <span class="metric">537 symbols × 227K bars</span>
-      <span class="metric">288 가설 / 6 팩터</span>
-      <span class="metric">6 실험 (고정 3 + LLM-guided 3)</span>
+      <span class="metric">641 symbols × 227K bars</span>
+      <span class="metric g">vol-bar engine ~3× faster</span>
+      <span class="metric">walk-forward 6-window OOS</span>
     </div>
+    <div class="sub">거래량바(volume-bar) 엔진</div>
+    <p class="proj-desc" style="margin-top:0">시간봉 대신 <b>거래량바</b>로 이벤트를 재구성(<code>VolBarSeries</code>) → 심볼별 배열 O(1) 피처 읽기, 팩터 ~30종, Dict 방식 대비 <b>~3× 가속</b>. 랭크 사전계산 후 hold/side/N/gate만 바꿔 재사용.</p>
+    <div class="sub">Pump-detect 전략</div>
+    <p class="proj-desc" style="margin-top:0"><b>pump-fade + pump-end exit</b> — 가격↓·OI↓(롤오버)가 동반되면 조기청산. walk-forward 6윈도우 IS→OOS·심볼당 1포지션 dedup·fee 6bp 규약으로 과적합 차단.</p>
     <div class="sub">리서치한 팩터</div>
-    <p class="proj-desc" style="margin-top:0">premium(basis·김프) · open interest · funding rate · return momentum · volume · vwap · price-OI momentum — Universe/Regime/Temporal cross-sectional IC로 검증.</p>
+    <p class="proj-desc" style="margin-top:0">premium(basis·김프) · open interest · funding rate · return momentum · volume · vwap · price-OI momentum.</p>
     <div class="sub">Long-Short 라이브 테스트 (사이드 프로젝트)</div>
     <p class="proj-desc" style="margin-top:0">검증된 <b>크로스섹셔널 롱숏 전략 4종</b>을 바이낸스 선물에 <b>실시간 forward 모니터링</b>(5분 REST 폴링·view-only) — quintile L/S · meme Top-50 · 12h hold.</p>
-    <div class="stack"><span class="t">Julia</span><span class="t">Rust (amure-db)</span><span class="t">Python</span><span class="t">LLM</span></div>
+    <div class="stack"><span class="t">Julia</span><span class="t">Python</span><span class="t">Claude Code (HITL)</span></div>
   </article>
 
   <article class="proj reveal">
