@@ -150,9 +150,9 @@
         <li>wire-to-order·multi-feeder 벤치마크</li>
         <li><code>PARSING_LATENCY_SPEC</code> 명세화</li></ul></div>
       <div class="bd"><h5><span class="n">04</span>ML Market Making</h5><ul>
-        <li>SOL MM: walk-forward, <b>parity 감사</b></li>
+        <li>ML <b>미시구조 시그널</b> → maker 호가</li>
         <li>97-feature 스키마 + 모델 로더</li>
-        <li>BTC fair-value → maker 전략 배포</li></ul></div>
+        <li>cross-symbol·cross-exchange 리서치</li></ul></div>
       <div class="bd"><h5><span class="n">05</span>Execution Safety</h5><ul>
         <li>missed fill 감지, REST 검증 폴백</li>
         <li>graceful flatten, Stop/Shutdown API</li>
@@ -226,11 +226,11 @@
       시스템 구축에서 끝내지 않고, 실제 데이터로 시그널을 검증하고 전략을 <b>forward test</b>까지 돌립니다.
     </p>
     <div class="sub">Market Microstructure</div>
-    <p class="proj-desc" style="margin-top:0">오더북 <b>큐 마이크로구조</b> 리서치 + 분석 툴링 (빗썸).</p>
+    <p class="proj-desc" style="margin-top:0">오더북 <b>큐 마이크로구조</b> 리서치 + 분석 툴링 (빗썸). <b>머신러닝으로 미시구조 시그널(오더플로·큐 동역학)을 추출</b>해 fair-value·메이커 호가에 반영. <b>cross-symbol · cross-exchange</b> 시그널 리서치도 병행.</p>
     <div class="sub">ML / 통계 분석</div>
-    <p class="proj-desc" style="margin-top:0">BTC·SOL <b>fair-value 모델링</b>(walk-forward) · 팩터 분석 <code>IC · IR · hit ratio</code> · sim↔forward <b>parity 감사</b> · fee sweep · calibration.</p>
+    <p class="proj-desc" style="margin-top:0"><b>fair-value 모델링</b>(walk-forward) · 팩터 분석 <code>IC · IR · hit ratio</code> · calibration.</p>
     <div class="sub">Forward Test (실거래 검증)</div>
-    <p class="proj-desc" style="margin-top:0"><b>BTC 낙주매매</b>(급락 후 반등) · <b>WLD</b> pair-reversion · <b>국내 거래소 MM</b>(빗썸) · SOL·DOGE 모델 기반 MM.</p>
+    <p class="proj-desc" style="margin-top:0"><b>BTC 낙주매매</b>(급락 후 반등) · <b>WLD</b> pair-reversion · <b>국내 거래소 MM</b>(빗썸) · 모델 기반 MM. 자체 제작 <b>가상거래소는 큐 포지션(queue position)·레이턴시(latency)까지 모델링</b>해 sim↔실거래 괴리를 최소화했고, 현재 <b>ML 미시구조 시그널 기반 MM 전략을 실시간 forward test 중</b>.</p>
   </article>
 
 </div>
