@@ -113,7 +113,7 @@
       <div class="jyear">2026 · 현재</div>
       <div class="jhead">순수 Rust OMS 🦀</div>
       <p class="jp prob"><span class="lab">문제</span> 온몸을 비틀어도 FFI 경계 오버헤드 + Julia <b>GC 압박</b>이 레이턴시·안정성의 병목.</p>
-      <p class="jp sol"><span class="lab">해결</span> OMS 전면을 <b>순수 Rust로 마이그레이션</b>. zero-alloc 상태머신, 11개 거래소 통합 → <b>tick-to-trade p50 4.23µs · 218K tps</b>.</p>
+      <p class="jp sol"><span class="lab">해결</span> OMS 전면을 <b>순수 Rust로 마이그레이션</b>. zero-alloc 상태머신, 11개 거래소 통합 → <b>tick-to-trade p50 4.23µs · 218K tps</b> <span style="color:var(--dim)">(네트워크 제외, 내부 처리 기준)</span>.</p>
       <p class="jp now"><span class="lab">진행중</span> <b>2026년 1월</b>부터 Claude Code(AI 에이전트)로 개발 가속 — 현재도 활발히 진행 중.</p>
       <div class="jtags">amuredo-OMS-v2 (Rust) · 102 commits / 2026</div>
     </div>
@@ -133,7 +133,7 @@
       수직 통합했고, <b>2026년 102개 커밋</b>에 걸쳐 직접 설계·구현했습니다.
     </p>
     <div class="metrics">
-      <span class="metric g">tick-to-trade p50 4.23µs</span>
+      <span class="metric g">tick-to-trade p50 4.23µs (net 제외)</span>
       <span class="metric g">218K tps</span>
       <span class="metric">27 crates</span>
       <span class="metric">11 exchanges</span>
