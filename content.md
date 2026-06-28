@@ -73,7 +73,7 @@
       <div class="bd"><h5><span class="n">06</span>VirtualExchange</h5><ul>
         <li>Latency/Queue 고려가능한 가상 거래소 구현</li></ul></div>
     </div>
-    <div class="stack"><span class="t">Rust</span><span class="t">tokio</span><span class="t">simd-json</span><span class="t">Polars/Parquet</span><span class="t">Julia (models)</span></div>
+    <div class="stack"><span class="t">Rust (Infra)</span><span class="t">Julia (EDA)</span></div>
   </article>
 
   <article class="proj reveal">
@@ -83,31 +83,24 @@
       data analysis->smoked backtest->forwardtest 워크플로우 구축.
     </p>
     <div class="sub">Market Microstructure</div>
-    <p class="proj-desc" style="margin-top:0">오더북 큐 마이크로구조 리서치 + 분석 툴링 (빗썸).<br>머신러닝기반 시그널로 메이커 호가 조정.<br>cross-symbol · cross-exchange 시그널 리서치</p>
+    <p class="proj-desc" style="margin-top:0">오더북 큐 마이크로구조 리서치 + 분석<br>머신러닝기반 시그널로 메이커 호가 제출<br>cross-symbol · cross-exchange 시그널 리서치</p>
     <div class="sub">ML / 통계 분석</div>
-    <p class="proj-desc" style="margin-top:0">Model 학습, Shap분석을 통한 모델 해석, tstat/HAC를 통한 p-value 해석.</p>
+    <p class="proj-desc" style="margin-top:0">Model 학습<br> Shap분석을 통한 모델 해석<br>tstat/HAC를 통한 p-value 해석</p>
     <div class="sub">Forward Test (실거래 검증)</div>
-    <p class="proj-desc" style="margin-top:0">BTC 낙주매매 백테스트 · 국내거래소 WLD pair-reversion · 국내 거래소 MM(빗썸) · 모델 기반 MM.<br>자체 제작 가상거래소는 큐 포지션(queue position)·레이턴시(latency)까지 모델링해 sim↔실거래 괴리를 최소화했고,현재 ML 미시구조 시그널 기반 MM 전략을 실시간 forward test 중.</p>
+    <p class="proj-desc" style="margin-top:0">BTC 낙주매매<br> 국내거래소 WLD pair-reversion<br>자체 제작 가상거래소는 queue position·latency까지 모델링해 괴리를 최소화<br>현재 ML 미시구조 시그널 기반 MM 전략을 실시간 forward test 중.</p>
   </article>
 
   <article class="proj reveal">
     <div class="proj-meta"><span class="yr">2026</span> · Rust · Julia <span class="badge priv">Private</span></div>
-    <div class="proj-title">Forward Test Harness · SimExchange</div>
+    <div class="proj-title">Forward Test · VirtualExchange</div>
     <p class="proj-desc">
       Smoked Backtest의 문제점을 해결하기 위한 가상거래소 기반 포워드 테스트.<br>
-      backtest=Smoked Data기반 체결가정 / forward=SimExchange(라이브 피드) / live 3단계가 같은 전략 바이너리를 실행해, 어디서 새는지 같은 코드로 추적합니다.
+      backtest=Smoked Data기반 체결가정 / forward=VirtualExchange(라이브 피드) / live 3단계 검증
     </p>
     <div class="metrics">
-      <span class="metric g">Rust↔Julia Pearson 1.000000</span>
-      <span class="metric">3-stage · same binary</span>
-      <span class="metric">8-step deploy gate</span>
     </div>
     <div class="sub">가상거래소(SimExchange) 모델링</div>
-    <p class="proj-desc" style="margin-top:0">큐 포지션 추적 fill 모델 사다리(EndOfQueue→QueueBased) — 내 호가 앞 물량이 빠진 만큼만 체결.<br>레이턴시(주문 왕복·피드 지연)를 주입해 의사결정-체결 시차를 재현.<br>시간 주입(<code>ctx.now_ms()</code>)으로 결정론 보장.</p>
-    <div class="sub">정합성 검증</div>
-    <p class="proj-desc" style="margin-top:0">same-window 규칙 + yhat 분포 parity(<code>σ ratio∈[0.85,1.15]</code>, same-second <code>ρ≥0.85</code>) + <code>feat_hash</code> byte 일치.<br>Rust↔Julia 예측 Pearson 1.000000(max diff 7e-9) 달성.</p>
-    <div class="sub">정직한 기록</div>
-    <p class="proj-desc" style="margin-top:0">백테스트 +18.8bp vs 같은 구간 실거래 −29¢(~5bp 낙관 갭)를 큐 포지션 잔차로 보고 그대로 기록.<br>→ "Sim PnL 숫자 자체는 믿지 말고 same-window로만 비교", 배포 전 8단계 체크리스트 통과 규약.</p>
+    <p class="proj-desc" style="margin-top:0">큐 포지션 추적 fill 모델 사다리(EndOfQueue→QueueBased) — 내 호가 앞 물량이 빠진 만큼만 체결.<br>레이턴시(주문 왕복·피드 지연)를 주입해 의사결정-체결 시차를 재현.</p>
     <div class="stack"><span class="t">Rust</span><span class="t">Julia</span><span class="t">SimExchange</span></div>
   </article>
 
@@ -117,7 +110,8 @@
     <p class="proj-desc">
       크립토 선물 알파 리서치 플랫폼.<br>
       현재 주력은 Human-in-the-Loop 모드 — 터미널에서 Claude와 대화하며 Julia 데이터 서버(641 코인 × 227K 5분봉)에 실험을 직접 던지고,<br>
-      실험 설계 → Julia 스크립트 → 결과 해석 루프를 빠르게 돕니다.
+      실험 설계 → Julia 스크립트 → 결과 해석 루프를 빠르게 돕니다.<br> 
+      장기적으로 HFT 플랫폼의 의사결정에 주입될 예정.
     </p>
     <div class="metrics">
       <span class="metric">641 symbols × 227K bars</span>
@@ -125,13 +119,11 @@
       <span class="metric">walk-forward 6-window OOS</span>
     </div>
     <div class="sub">거래량바(volume-bar) 엔진</div>
-    <p class="proj-desc" style="margin-top:0">시간봉 대신 거래량바로 이벤트를 재구성(<code>VolBarSeries</code>) → 심볼별 배열 O(1) 피처 읽기, 팩터 ~30종, Dict 방식 대비 ~3× 가속.<br>랭크 사전계산 후 hold/side/N/gate만 바꿔 재사용.</p>
+    <p class="proj-desc" style="margin-top:0">Volume Bar기반 리서치</p>
     <div class="sub">Pump-detect 전략</div>
-    <p class="proj-desc" style="margin-top:0">pump-fade + pump-end exit — 가격↓·OI↓(롤오버)가 동반되면 조기청산.<br>walk-forward 6윈도우 IS→OOS·심볼당 1포지션 dedup·fee 6bp 규약으로 과적합 차단.</p>
-    <div class="sub">리서치한 팩터</div>
+    <div class="sub">리서치 factor</div>
     <p class="proj-desc" style="margin-top:0">premium(basis·김프) · open interest · funding rate · return momentum · volume · vwap · price-OI momentum.</p>
-    <div class="sub">Long-Short 라이브 테스트 (사이드 프로젝트)</div>
-    <p class="proj-desc" style="margin-top:0">검증된 크로스섹셔널 롱숏 전략 4종을 바이낸스 선물에 실시간 forward 모니터링(5분 REST 폴링·view-only)<br>— quintile L/S · meme Top-50 · 12h hold.</p>
+    <div class="sub">Long-Short 라이브 테스트</div>
     <div class="stack"><span class="t">Julia</span><span class="t">Python</span><span class="t">Claude Code (HITL)</span></div>
   </article>
 
@@ -173,41 +165,13 @@
       <a href="https://github.com/donghui-0126/heuristiX-v2" target="_blank" rel="noopener">source ↗</a>
     </div>
   </article>
-
-  <article class="proj reveal">
-    <div class="proj-meta"><span class="yr">2026</span> · Rust</div>
-    <div class="proj-title">amure-do / amure-db</div>
-    <p class="proj-desc">
-      Rust로 직접 만든 그래프 RAG 지식 엔진.<br>
-      amure-db는 임베딩+그래프 하이브리드 3-layer 검색(cosine → graph walk → MMR),<br>
-      amure-do는 이를 도메인 불문 가설 기반 연구 엔진으로 일반화(11 LLM providers).<br>
-      레거시 38→15파일 클린 리빌드.
-    </p>
-    <div class="stack"><span class="t">Rust</span><span class="t">embeddings</span><span class="t">graph</span></div>
-    <div class="plinks-row">
-      <a href="https://github.com/donghui-0126/amure-do" target="_blank" rel="noopener">amure-do ↗</a>
-      <a href="https://github.com/donghui-0126/amure-db" target="_blank" rel="noopener">amure-db ↗</a>
-    </div>
-  </article>
-
 </div>
 
 <h2 id="engineering">🛠️ Engineering &amp; Troubleshooting</h2>
 
-<p class="ts-intro">amuredo-OMS(Julia+Rust)와 amuredo-OMS-v2(순수 Rust)를 만들며 부딪힌 실전 엔지니어링 고민과 해결의 기록 — 데이터 수집부터 주문 실행까지 6개 단계. <span style="color:var(--dim)">알파·시그널 내용은 제외, 시스템 설계와 트러블슈팅만. (포워드 테스트 가상거래소는 별도 카드로 분리)</span></p>
+<p class="ts-intro">amuredo-OMS(Julia+Rust)와 amuredo-OMS-v2(순수 Rust)를 만들며 부딪힌 실전 엔지니어링 고민과 해결의 기록</p>
 
 <div class="ts-list">
-
-  <article class="ts reveal">
-    <div class="ts-h"><span class="n">01</span><span class="tt">데이터 수집</span><span class="en">data-save · parquet archival</span></div>
-    <p class="jp prob"><span class="lab">문제</span> 멀티 거래소 원시 틱의 정보를 효율적으로 사용하려면?</p>
-    <p class="jp sol"><span class="lab">해결</span> 시작은 Tardis 외부 히스토리 데이터로 마이크로구조를 분석한 것.<br>그런데 막상 내가 실시간으로 수집한 데이터와 차이가 생각보다 커서(체결·호가 타이밍, 누락 패턴) 직접 수집 인프라를 구축함.<br>3,349 심볼 × 12 거래소를 시간단위 Parquet 파티션(<code>&lt;거래소&gt;/&lt;심볼&gt;/&lt;YYYYMMDD_HH&gt;</code>)으로 아카이빙,<br>watchdog 싱글톤으로 단일 인스턴스 강제.<br>60k msg/sec 고부하에서 OS NIC batching이 RX→consumer lag p99를 1,140ms까지 밀어<br>1Hz 스냅샷이 stale해지는 "silent contamination"을 측정으로 발견<br>→ 프로세스당 ≤50k msg/sec ≈ 800심볼 안전선으로 분할.</p>
-    <div class="metrics">
-      <span class="metric g">Tardis → 자체 수집</span>
-      <span class="metric g">lag p99 1140ms → 95ms</span>
-      <span class="metric">≤50k msg/sec / proc</span>
-    </div>
-  </article>
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">02</span><span class="tt">피더 &amp; 피처 스토어</span><span class="en">feeder · FeatureStore</span></div>
@@ -235,7 +199,7 @@
   <article class="ts reveal">
     <div class="ts-h"><span class="n">04</span><span class="tt">주문 제출</span><span class="en">order channel · state machine</span></div>
     <p class="jp prob"><span class="lab">문제</span> 전략 결정 → 거래소 REST까지,<br>핫패스에서 할당 없이 주문 수명을 안전하게 관리하려면?</p>
-    <p class="jp sol"><span class="lab">해결</span> 주문은 order Channel(Strategy→OMS)로 흘러 REST 워커가 제출.<br>상태머신(<code>PlaceCreated→PlaceInFlight→Placed→Partial/Filled</code>, <code>CancelInFlight→Canceled</code>, <code>MaybeMissed</code>)<br>— 정의되지 않은 전이는 identity로 중복 이벤트를 흡수.<br>local↔exchange ID 양방향 매핑, zero-alloc 오브젝트 풀(v1 사전할당 50만 개).</p>
+    <p class="jp sol"><span class="lab">해결</span> 주문은 order Channel(Strategy→OMS)로 흘러 REST 워커가 제출.<br>상태머신(<code>PlaceCreated→PlaceInFlight→Placed→Partial/Filled</code>, <code>CancelInFlight→Canceled</code>, <code>MaybeMissed</code>)<br>— 정의되지 않은 전이는 identity로 중복 이벤트를 흡수.<br>local↔exchange ID 양방향 매핑, zero-alloc 오브젝트 풀</p>
     <div class="metrics">
       <span class="metric">11-state FSM</span>
       <span class="metric g">zero-alloc OrderInOMS Pool</span>
@@ -256,7 +220,7 @@
 
   <article class="ts reveal">
     <div class="ts-h"><span class="n">06</span><span class="tt">웹소켓 유저스트림</span><span class="en">user-stream · out-of-order · gap</span></div>
-    <p class="jp prob"><span class="lab">문제</span> 거래소 WS가 체결을 ACK보다 먼저 보내거나,<br>이벤트를 빠뜨리거나(gap), 같은 체결을 두 번 보내면?</p>
+    <p class="jp prob"><span class="lab">문제</span> 거래소 WS가 체결을 호가 등록보다 먼저 보내거나,<br>이벤트를 빠뜨리거나(gap), 같은 체결을 두 번 보내면?</p>
     <p class="jp sol"><span class="lab">해결</span> ① 순서 역전 — <code>pending_ws_buffer</code>(64)가 early-fill을 버퍼링했다가 REST 매핑이 생기면 순서대로 replay.<br>② 누락 — <code>MissedFillDetector</code>가 체결틱이 내 호가를 관통하면 grace 2000ms 대기 후 REST로 실체 확인.<br>③ 끊김 — listen-key <code>keep_alive_loop</code> + 2–5s 백오프 auto-reconnect.<br>④ 중복 — <code>processed_trade_id_set</code> trade_id dedup + 상태머신 중복 흡수.</p>
     <div class="metrics">
       <span class="metric">early-fill replay buf 64</span>
