@@ -95,16 +95,16 @@
       <p class="jp prob"><span class="lab">문제</span> 리서치를 실거래로. GC가 있는 Julia로 <b>마이크로초 핫패스</b>를 버틸 수 있나?</p>
       <p class="jp sol"><span class="lab">해결</span> Julia로 OMS를 직접 구현하고 성능을 <b>극한까지 짜냄</b>:</p>
       <ul style="list-style:none">
-        <li class="jopt"><b>커스텀 자료구조 다수 직접 설계</b> — object pool · ring buffer · 컬럼 스토어 등 핫패스 전용</li>
-        <li class="jopt"><b>lock 경합 최소화</b>에 집중 — 공유 상태를 줄이고 lock-free/단일 소유권 구조로 설계</li>
-        <li class="jopt">Pricing은 <b>dirty-index</b>만 복사하는 더블버퍼로 피처 공급 → 락 없이 sim↔live 정합</li>
+        <li class="jopt"><b>핫패스 전용 자료구조 직접 설계</b> — <code>DoubleBuffer</code>·<code>IdxSet</code>(dirty index)·<code>EfficientDict</code>·<code>MultipleBuffering</code> 링버퍼·hot-connection 풀(<code>OnePool</code>)</li>
+        <li class="jopt"><b>lock 경합 최소화</b> — <code>Channel</code> producer/consumer로 피처 생산↔소비 분리, 단일 상태는 <code>Atomic</code>으로 락 자체를 제거</li>
+        <li class="jopt"><b>Pricing 더블버퍼</b> — 쓰기는 back buffer, 읽기는 <code>Atomic</code> active-index 스냅샷이라 전략은 <b>락 없이 read</b>. <code>reconcile_dirty!</code>가 <b>바뀐 인덱스만</b> 복사</li>
         <li class="jopt"><code>@view</code> zero-copy 슬라이싱 · <code>@inbounds</code> 경계검사 제거</li>
         <li class="jopt">pre-allocation + in-place(<code>!</code>) 버퍼 재사용 → <b>heap allocation 극한 감소</b></li>
         <li class="jopt">type stability(<code>@code_warntype</code>), 핫루프 박싱·동적 디스패치 제거</li>
         <li class="jopt"><code>Threads.@threads</code>·<code>@spawn</code> 병렬 연산 파이프라인</li>
         <li class="jopt">Julia 패키지·성능 한계는 <code>ccall</code> <b>Rust DLL</b>로 우회 (하이브리드)</li>
       </ul>
-      <div class="jtags">Julia OMS · ccall FFI · Rust DLL hotpath</div>
+      <div class="jtags">Julia OMS · DoubleBuffer dirty-index · ccall FFI · Rust DLL hotpath</div>
     </div>
   </div>
 
