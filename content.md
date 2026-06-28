@@ -54,7 +54,7 @@
       실시간 데이터 수집부터 주문 실행까지 전부 구현했습니다. 
     </p>
     <div class="metrics">
-      <span class="metric g">tick-to-trade p50 4.23µs (net 제외)</span>
+      <span class="metric g">tick-to-trade p50 4.23µs (네트워크·모델 인퍼런스 제외)</span>
     </div>
     <div class="bd-grid">
       <div class="bd"><h5><span class="n">01</span>Engine &amp; Pipeline</h5><ul>
@@ -303,7 +303,7 @@
       <div class="jyear">2026 · 현재</div>
       <div class="jhead">순수 Rust OMS 🦀</div>
       <p class="jp prob"><span class="lab">문제</span> 온몸을 비틀어도 FFI 경계 오버헤드 + Julia GC 압박이 레이턴시·안정성의 병목.</p>
-      <p class="jp sol"><span class="lab">해결</span> OMS 전면을 순수 Rust로 마이그레이션.<br>zero-alloc 상태머신, 5개 거래소 통합<br>→ tick-to-trade p50 4.23µs <span style="color:var(--dim)">(네트워크 제외, 내부 처리 기준, 모델 제외)</span>.</p>
+      <p class="jp sol"><span class="lab">해결</span> OMS 전면을 순수 Rust로 마이그레이션.<br>zero-alloc 상태머신, 5개 거래소 통합<br>→ tick-to-trade p50 4.23µs <span style="color:var(--dim)">(네트워크·모델 인퍼런스 제외, 내부 처리 기준)</span>.</p>
       <p class="jp now"><span class="lab">진행중</span> 2026년 1월부터 Claude Code(AI 에이전트)로 개발 가속<br>— 현재도 활발히 진행 중.</p>
       <div class="jtags">amuredo-OMS-v2 (Rust) · 102 commits / 2026</div>
     </div>
