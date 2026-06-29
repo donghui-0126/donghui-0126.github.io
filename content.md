@@ -21,7 +21,6 @@
   <div class="plinks">
     <a class="plink solid" href="https://github.com/donghui-0126" target="_blank" rel="noopener">GitHub ↗</a>
     <a class="plink" href="mailto:lukedonghui@gmail.com">✉ Email</a>
-    <a class="plink" href="https://donghui-0126.github.io/StoryQuant/" target="_blank" rel="noopener">StoryQuant Demo ↗</a>
   </div>
 </header>
 
