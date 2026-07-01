@@ -301,6 +301,7 @@
 
 | Year | Competition | Result |
 |------|-------------|--------|
+| 2026 | 경희대학교 캡스톤 디자인 경진대회 (HeuristiX) | **본선 진출 (상위 5팀)** |
 | 2025 | Jane Street — Real-Time Market Data Forecasting (Kaggle) | **Bronze 🥉** |
 | 2024 | BDA × ASCEND — Bitcoin Volatility Prediction | **우수상** |
 | 2023 | WorldQuant Alphaton Korea | **3rd 🥉** |
